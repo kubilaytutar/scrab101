@@ -1,25 +1,39 @@
 const createAudio = (src: string) => {
   const audio = new Audio(src);
   
-  // Sesi önceden yükle
+  // Enable audio playback on mobile
+  audio.setAttribute('playsinline', '');
+  audio.setAttribute('webkit-playsinline', '');
+  
+  // Preload audio
   audio.preload = "auto";
-  audio.load();
   
   return {
     play: () => {
-      return new Promise<void>((resolve, reject) => {
-        // Sesi baştan başlat
+      return new Promise<void>((resolve) => {
+        // Reset audio to start
         audio.currentTime = 0;
         
-        // Ses çalma işlemini promise olarak döndür
+        // Handle mobile audio playback
         const playPromise = audio.play();
         
         if (playPromise !== undefined) {
           playPromise
             .then(() => resolve())
-            .catch(error => {
-              console.error("Ses çalma hatası:", error);
-              resolve(); // Hata olsa bile işlemi tamamla
+            .catch(() => {
+              // If autoplay is blocked (common on mobile), try playing on next user interaction
+              const playOnInteraction = () => {
+                audio.play()
+                  .then(() => {
+                    document.removeEventListener('touchstart', playOnInteraction);
+                    document.removeEventListener('click', playOnInteraction);
+                  })
+                  .catch(console.error);
+              };
+              
+              document.addEventListener('touchstart', playOnInteraction, { once: true });
+              document.addEventListener('click', playOnInteraction, { once: true });
+              resolve();
             });
         } else {
           resolve();
@@ -33,7 +47,7 @@ const createAudio = (src: string) => {
   };
 };
 
-// Ses nesnelerini oluştur
+// Create audio instances
 export const clickSound = createAudio("/click.mp3");
 export const successSound = createAudio("/success.mp3");
 export const tickSound = createAudio("/tick.mp3");

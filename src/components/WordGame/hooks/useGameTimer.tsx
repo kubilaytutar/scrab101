@@ -21,7 +21,10 @@ export const useGameTimer = ({
         if (prev <= 1 && !isGameOver) {
           clearInterval(timer);
           setIsGameOver(true);
-          gameOverSound.play().catch(console.error);
+          // Play game over sound immediately
+          requestAnimationFrame(() => {
+            gameOverSound.play().catch(console.error);
+          });
           return 0;
         }
         
