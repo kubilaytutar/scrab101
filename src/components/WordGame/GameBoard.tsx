@@ -40,6 +40,8 @@ const UNITS = {
   }
 };
 
+const successSound = new Audio("/success.mp3");
+
 const GameBoard = () => {
   const [currentWord, setCurrentWord] = useState("");
   const [scrambledLetters, setScrambledLetters] = useState<Array<{ letter: string; position: number }>>([]);
@@ -170,6 +172,7 @@ const GameBoard = () => {
     const attemptedWord = newSelected.join("");
     if (attemptedWord.length === currentWord.length) {
       if (attemptedWord === currentWord) {
+        successSound.play().catch(console.error);
         toast.success("Correct!");
         setScore((prev) => prev + 10);
         
