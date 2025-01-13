@@ -4,21 +4,29 @@ import { Letter } from "./Letter";
 import { toast } from "sonner";
 
 const UNITS = {
-  fruits: {
-    name: "Fruits",
-    words: ["APPLE", "BANANA", "ORANGE", "GRAPE", "LEMON"]
-  },
   animals: {
     name: "Animals",
-    words: ["TIGER", "ELEPHANT", "LION", "GIRAFFE", "ZEBRA"]
+    words: ["LION", "TIGER", "BEAR", "ELEPHANT", "GIRAFFE", "MONKEY", "ZEBRA", "PENGUIN", "KANGAROO", "DOLPHIN"]
+  },
+  fruits: {
+    name: "Fruits",
+    words: ["APPLE", "BANANA", "ORANGE", "GRAPE", "MANGO", "KIWI", "PEAR", "PEACH", "PLUM", "CHERRY"]
+  },
+  vegetables: {
+    name: "Vegetables",
+    words: ["CARROT", "POTATO", "TOMATO", "ONION", "PEPPER", "LETTUCE", "CUCUMBER", "BROCCOLI", "CORN", "SPINACH"]
   },
   colors: {
     name: "Colors",
-    words: ["BLACK", "WHITE", "YELLOW", "PURPLE", "GREEN"]
+    words: ["RED", "BLUE", "GREEN", "YELLOW", "PURPLE", "ORANGE", "BROWN", "BLACK", "WHITE", "PINK"]
   },
   jobs: {
     name: "Jobs",
-    words: ["DOCTOR", "TEACHER", "PILOT", "CHEF", "ARTIST"]
+    words: ["DOCTOR", "TEACHER", "PILOT", "CHEF", "NURSE", "ARTIST", "LAWYER", "DRIVER", "WRITER", "ACTOR"]
+  },
+  countries: {
+    name: "Countries",
+    words: ["TURKEY", "ENGLAND", "FRANCE", "SPAIN", "ITALY", "JAPAN", "CHINA", "BRAZIL", "CANADA", "EGYPT"]
   }
 };
 
