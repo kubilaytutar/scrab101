@@ -7,7 +7,7 @@ import WordDisplay from "./WordDisplay";
 import GameHeader from "./GameHeader";
 import GameControls from "./GameControls";
 import LettersDisplay from "./LettersDisplay";
-import { UNITS, successSound, tickSound } from "./gameData";
+import { UNITS, successSound, tickSound, gameOverSound } from "./gameData";
 import { useGameState } from "./hooks/useGameState";
 import { initializeAvailableWords, scrambleWord } from "./utils/gameUtils";
 
@@ -205,6 +205,7 @@ const GameBoard = () => {
         if (prev <= 1) {
           clearInterval(timer);
           setIsGameOver(true);
+          gameOverSound.play().catch(console.error);
           return 0;
         }
         if (prev <= 10) {
