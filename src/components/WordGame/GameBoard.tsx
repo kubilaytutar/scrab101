@@ -4,6 +4,7 @@ import { Letter } from "./Letter";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const UNITS = {
   unit1: {
@@ -55,6 +56,9 @@ const GameBoard = () => {
   const [usedWords, setUsedWords] = useState<Set<string>>(new Set());
   const [availableWords, setAvailableWords] = useState<string[]>([]);
   const [jokerCount, setJokerCount] = useState(2);
+  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [usedJokers, setUsedJokers] = useState(0);
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const scrambleWord = (word: string) => {
     return word
@@ -83,6 +87,7 @@ const GameBoard = () => {
         if (position !== -1) {
           handleLetterClick(nextLetter, scrambledLetters[position].position);
           setJokerCount((prev) => prev - 1);
+          setUsedJokers((prev) => prev + 1);
           setTimeLeft((prev) => Math.max(0, prev - 10));
           toast.info("Joker kullanıldı! -10 saniye");
         }
@@ -126,6 +131,9 @@ const GameBoard = () => {
     setWordsCompletedInUnit(0);
     setScore(0);
     setTimeLeft(isExtendedTime ? 120 : 60);
+    setWrongAttempts(0);
+    setUsedJokers(0);
+    setIsGameOver(false);
     initializeAvailableWords(unit);
     toast.success(`Switched to unit: ${UNITS[unit].name}`);
   };
@@ -151,7 +159,7 @@ const GameBoard = () => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          toast.info("Game Over! Final score: " + score);
+          setIsGameOver(true);
           return 0;
         }
         return prev - 1;
@@ -159,7 +167,7 @@ const GameBoard = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [currentUnit]);
+  }, [currentUnit, isGameOver]);
 
   const handleLetterClick = (letter: string, position: number) => {
     if (selectedPositions.includes(position)) return;
@@ -185,6 +193,7 @@ const GameBoard = () => {
         }
       } else {
         toast.error("Try again!");
+        setWrongAttempts((prev) => prev + 1);
         setTimeout(() => {
           setSelectedLetters([]);
           setSelectedPositions([]);
@@ -198,118 +207,157 @@ const GameBoard = () => {
     setTimeLeft(isExtendedTime ? 120 : 60);
     setJokerCount(2);
     setWordsCompletedInUnit(0);
+    setWrongAttempts(0);
+    setUsedJokers(0);
+    setIsGameOver(false);
     initializeAvailableWords(currentUnit);
     toast.success("Game restarted! Good luck!");
   };
 
   return (
     <div className="max-w-2xl mx-auto p-6">
-      <div className="text-center mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-4xl font-bold text-gray-800 mb-4"
-        >
-          Unscramble
-        </motion.div>
-        <div className="text-xl font-semibold text-gray-600 mb-4">
-          Unit: {UNITS[currentUnit].name}
-        </div>
-        <div className="flex justify-center gap-4 text-lg">
-          <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-            Score: {score}
-          </div>
-          <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-            Time: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-          </div>
-          <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-            Progress: {wordsCompletedInUnit}/{UNITS[currentUnit].words.length}
-          </div>
-          <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-            Joker: {jokerCount}
-          </div>
-        </div>
-        <div className="flex items-center justify-center gap-2 mt-4">
-          <span className="text-sm text-gray-600">60s</span>
-          <Switch
-            checked={isExtendedTime}
-            onCheckedChange={handleTimeToggle}
-          />
-          <span className="text-sm text-gray-600">120s</span>
-        </div>
-        <Button
-          onClick={useJoker}
-          disabled={jokerCount === 0}
-          variant="outline"
-          className="mt-4"
-        >
-          Joker Kullan (-10s)
-        </Button>
-        {timeLeft === 0 && (
-          <Button
-            onClick={handleTryAgain}
-            variant="default"
-            className="mt-4 ml-2"
-          >
-            Try Again
-          </Button>
-        )}
-      </div>
-
-      <motion.div
-        layout
-        className="bg-gray-50 rounded-xl p-8 shadow-lg mb-8"
-      >
-        <div className="text-center mb-8">
-          <div className="text-gray-500 mb-2">Your answer:</div>
-          <div className="flex justify-center gap-2">
-            {currentWord.split("").map((_, i) => (
-              <div
-                key={i}
-                className="w-12 h-12 border-2 border-gray-300 rounded-lg flex items-center justify-center text-xl font-semibold"
-              >
-                {selectedLetters[i] || ""}
+      {isGameOver ? (
+        <Card className="w-full p-6">
+          <CardHeader>
+            <CardTitle className="text-center text-2xl">Game Over!</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 text-center">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-gray-600">Final Score</p>
+                <p className="text-2xl font-bold">{score}</p>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex flex-wrap justify-center gap-3">
-          <AnimatePresence>
-            {scrambledLetters.map(({ letter, position }, index) => (
-              <motion.div
-                key={`${position}-${index}`}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Letter
-                  letter={letter}
-                  onClick={() => handleLetterClick(letter, position)}
-                  isSelected={selectedPositions.includes(position)}
-                />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-      </motion.div>
-
-      <div className="mt-8">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">Select a Unit</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {(Object.keys(UNITS) as (keyof typeof UNITS)[]).map((unit) => (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-gray-600">Words Completed</p>
+                <p className="text-2xl font-bold">{wordsCompletedInUnit}</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-gray-600">Wrong Attempts</p>
+                <p className="text-2xl font-bold">{wrongAttempts}</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-gray-600">Jokers Used</p>
+                <p className="text-2xl font-bold">{usedJokers}</p>
+              </div>
+            </div>
             <Button
-              key={unit}
-              onClick={() => handleUnitSelect(unit)}
-              variant={currentUnit === unit ? "default" : "outline"}
-              className="w-full"
+              onClick={handleTryAgain}
+              className="w-full mt-4"
             >
-              {UNITS[unit].name}
+              Try Again
             </Button>
-          ))}
-        </div>
-      </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <div className="text-center mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl font-bold text-gray-800 mb-4"
+            >
+              Unscramble
+            </motion.div>
+            <div className="text-xl font-semibold text-gray-600 mb-4">
+              Unit: {UNITS[currentUnit].name}
+            </div>
+            <div className="flex justify-center gap-4 text-lg">
+              <div className="bg-white rounded-lg px-4 py-2 shadow-md">
+                Score: {score}
+              </div>
+              <div className="bg-white rounded-lg px-4 py-2 shadow-md">
+                Time: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+              </div>
+              <div className="bg-white rounded-lg px-4 py-2 shadow-md">
+                Progress: {wordsCompletedInUnit}/{UNITS[currentUnit].words.length}
+              </div>
+              <div className="bg-white rounded-lg px-4 py-2 shadow-md">
+                Joker: {jokerCount}
+              </div>
+            </div>
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <span className="text-sm text-gray-600">60s</span>
+              <Switch
+                checked={isExtendedTime}
+                onCheckedChange={handleTimeToggle}
+              />
+              <span className="text-sm text-gray-600">120s</span>
+            </div>
+            <Button
+              onClick={useJoker}
+              disabled={jokerCount === 0}
+              variant="outline"
+              className="mt-4"
+            >
+              Joker Kullan (-10s)
+            </Button>
+            {timeLeft === 0 && (
+              <Button
+                onClick={handleTryAgain}
+                variant="default"
+                className="mt-4 ml-2"
+              >
+                Try Again
+              </Button>
+            )}
+          </div>
+
+          <motion.div
+            layout
+            className="bg-gray-50 rounded-xl p-8 shadow-lg mb-8"
+          >
+            <div className="text-center mb-8">
+              <div className="text-gray-500 mb-2">Your answer:</div>
+              <div className="flex justify-center gap-2">
+                {currentWord.split("").map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-12 h-12 border-2 border-gray-300 rounded-lg flex items-center justify-center text-xl font-semibold"
+                  >
+                    {selectedLetters[i] || ""}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-3">
+              <AnimatePresence>
+                {scrambledLetters.map(({ letter, position }, index) => (
+                  <motion.div
+                    key={`${position}-${index}`}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.5 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Letter
+                      letter={letter}
+                      onClick={() => handleLetterClick(letter, position)}
+                      isSelected={selectedPositions.includes(position)}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+
+          <div className="mt-8">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">Select a Unit</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {(Object.keys(UNITS) as (keyof typeof UNITS)[]).map((unit) => (
+                <Button
+                  key={unit}
+                  onClick={() => handleUnitSelect(unit)}
+                  variant={currentUnit === unit ? "default" : "outline"}
+                  className="w-full"
+                >
+                  {UNITS[unit].name}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
