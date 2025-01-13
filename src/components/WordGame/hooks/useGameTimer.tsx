@@ -26,10 +26,18 @@ export const useGameTimer = ({
           }, 1000);
           return 0;
         }
+        
+        // Reset hasPlayedTickSound when time is above 13 seconds
+        if (prev > 13) {
+          hasPlayedTickSound = false;
+        }
+        
+        // Start playing tick sound at 13 seconds if not already playing
         if (prev <= 13 && prev > 0 && !isGameOver && !hasPlayedTickSound) {
           tickSound.play().catch(console.error);
           hasPlayedTickSound = true;
         }
+        
         if (isGameOver) {
           clearInterval(timer);
           return prev;

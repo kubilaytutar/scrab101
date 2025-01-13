@@ -7,7 +7,7 @@ import WordDisplay from "./WordDisplay";
 import GameHeader from "./GameHeader";
 import GameControls from "./GameControls";
 import LettersDisplay from "./LettersDisplay";
-import { UNITS, successSound } from "./gameData";
+import { UNITS, successSound, tickSound } from "./gameData";
 import { useGameState } from "./hooks/useGameState";
 import { useGameTimer } from "./hooks/useGameTimer";
 import { useWordManagement } from "./hooks/useWordManagement";
@@ -181,6 +181,7 @@ const GameBoard = () => {
         
         // Check if we have 3 successes within 3 seconds and haven't given bonus time for this word
         if (newRecentSuccesses.length >= 3 && !hasBonusTimeForCurrentWord) {
+          tickSound.pause(); // Stop the tick sound when bonus time is earned
           setTimeLeft(prev => prev + 5); // Changed from 10 to 5 seconds
           setRecentSuccesses([]); // Reset successes after adding bonus time
           setHasBonusTimeForCurrentWord(true); // Mark that we've given bonus time for this word
