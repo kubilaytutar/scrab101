@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 const UNITS = {
   unit1: {
     name: "School Life",
-    words: ["TURKEY", "ENGLAND", "SCOTLAND", "IRELAND", "USA", "CANADA", "AUSTRALIA", "ITALY", "FRANCE", "GERMANY", "SPAIN", "RUSSIA", "INDIA", "JAPAN", "CHINA", "MEXICO", "KOREA", "ARGENTINA", "POLAND", "FINLAND", "CHILE", "PERU", "THAILAND", "BRAZIL", "NORWAY", "DENMARK", "SWEDEN", "UKRAINE", "MOROCCO", "HUNGARY"]
+    words: ["ENGLAND", "SCOTLAND", "IRELAND", "USA", "CANADA", "AUSTRALIA", "ITALY", "FRANCE", "GERMANY", "SPAIN", "RUSSIA", "INDIA", "JAPAN", "CHINA", "MEXICO", "KOREA", "ARGENTINA", "POLAND", "FINLAND", "TURKEY"]
   },
   unit2: {
     name: "Classroom Life",
