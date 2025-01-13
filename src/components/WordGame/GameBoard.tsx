@@ -42,6 +42,15 @@ const GameBoard = () => {
     }
     setAvailableWords(words);
     setUsedWords(new Set());
+    if (words.length > 0) {
+      const firstWord = words[0];
+      setCurrentWord(firstWord);
+      setScrambledLetters(scrambleWord(firstWord));
+      setSelectedLetters([]);
+      setSelectedPositions([]);
+      setAvailableWords(words.slice(1));
+      setUsedWords(new Set([firstWord]));
+    }
   };
 
   const useJoker = () => {
@@ -101,6 +110,9 @@ const GameBoard = () => {
     setWrongAttempts(0);
     setUsedJokers(0);
     setIsGameOver(false);
+    setJokerCount(2);
+    setSelectedLetters([]);
+    setSelectedPositions([]);
     initializeAvailableWords(unit);
     toast.success(`Switched to unit: ${UNITS[unit].name}`);
   };
