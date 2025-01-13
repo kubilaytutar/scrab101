@@ -1,21 +1,48 @@
 const createAudio = (src: string) => {
   const audio = new Audio(src);
-  audio.preload = "auto";
+  
+  return new Promise<{ play: () => Promise<void> }>((resolve) => {
+    audio.addEventListener('canplaythrough', () => {
+      resolve({
+        play: () => {
+          audio.currentTime = 0;
+          return audio.play();
+        }
+      });
+    });
+    
+    audio.load();
+  });
+};
+
+const initializeAudio = async () => {
+  const clickAudio = await createAudio("/click.mp3");
+  const successAudio = await createAudio("/success.mp3");
+  const tickAudio = await createAudio("/tick.mp3");
+  const gameOverAudio = await createAudio("/4.mp3");
+  
   return {
-    play: () => {
-      if (audio.readyState >= 2) { // HAVE_CURRENT_DATA or better
-        audio.currentTime = 0;
-        return audio.play();
-      }
-      return Promise.reject(new Error("Audio not ready"));
-    }
+    clickSound: clickAudio,
+    successSound: successAudio,
+    tickSound: tickAudio,
+    gameOverSound: gameOverAudio
   };
 };
 
-export const successSound = createAudio("/success.mp3");
-export const clickSound = createAudio("/click.mp3");
-export const tickSound = createAudio("/tick.mp3");
-export const gameOverSound = createAudio("/4.mp3");
+export let clickSound = { play: async () => {} };
+export let successSound = { play: async () => {} };
+export let tickSound = { play: async () => {} };
+export let gameOverSound = { play: async () => {} };
+
+// Initialize audio when the module loads
+initializeAudio().then((sounds) => {
+  clickSound = sounds.clickSound;
+  successSound = sounds.successSound;
+  tickSound = sounds.tickSound;
+  gameOverSound = sounds.gameOverSound;
+}).catch(error => {
+  console.error("Ses dosyaları yüklenemedi:", error);
+});
 
 export const UNITS = {
   unit1: {
