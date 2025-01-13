@@ -209,7 +209,7 @@ const GameBoard = () => {
           gameOverSound.play().catch(console.error);
           return 0;
         }
-        if (prev <= 15 && prev > 0 && !isGameOver && !hasPlayedTickSound) {
+        if (prev <= 13 && prev > 0 && !isGameOver && !hasPlayedTickSound) {
           tickSound.play().catch(console.error);
           hasPlayedTickSound = true;
         }
