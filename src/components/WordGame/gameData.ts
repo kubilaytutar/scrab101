@@ -1,48 +1,36 @@
 const createAudio = (src: string) => {
   const audio = new Audio(src);
-  
-  return new Promise<{ play: () => Promise<void> }>((resolve) => {
-    audio.addEventListener('canplaythrough', () => {
-      resolve({
-        play: () => {
-          audio.currentTime = 0;
-          return audio.play();
-        }
-      });
-    });
-    
-    audio.load();
-  });
-};
-
-const initializeAudio = async () => {
-  const clickAudio = await createAudio("/click.mp3");
-  const successAudio = await createAudio("/success.mp3");
-  const tickAudio = await createAudio("/tick.mp3");
-  const gameOverAudio = await createAudio("/4.mp3");
+  audio.load(); // Sesi önceden yükle
   
   return {
-    clickSound: clickAudio,
-    successSound: successAudio,
-    tickSound: tickAudio,
-    gameOverSound: gameOverAudio
+    play: () => {
+      return new Promise<void>((resolve, reject) => {
+        // Kullanıcı etkileşimi sonrası sesi baştan başlat
+        audio.currentTime = 0;
+        
+        // Ses çalma işlemini promise olarak döndür
+        const playPromise = audio.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => resolve())
+            .catch(error => {
+              console.error("Ses çalma hatası:", error);
+              resolve(); // Hata olsa bile işlemi tamamla
+            });
+        } else {
+          resolve();
+        }
+      });
+    }
   };
 };
 
-export let clickSound = { play: async () => {} };
-export let successSound = { play: async () => {} };
-export let tickSound = { play: async () => {} };
-export let gameOverSound = { play: async () => {} };
-
-// Initialize audio when the module loads
-initializeAudio().then((sounds) => {
-  clickSound = sounds.clickSound;
-  successSound = sounds.successSound;
-  tickSound = sounds.tickSound;
-  gameOverSound = sounds.gameOverSound;
-}).catch(error => {
-  console.error("Ses dosyaları yüklenemedi:", error);
-});
+// Ses nesnelerini oluştur
+export const clickSound = createAudio("/click.mp3");
+export const successSound = createAudio("/success.mp3");
+export const tickSound = createAudio("/tick.mp3");
+export const gameOverSound = createAudio("/4.mp3");
 
 export const UNITS = {
   unit1: {
