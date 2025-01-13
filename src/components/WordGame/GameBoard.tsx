@@ -51,6 +51,7 @@ const GameBoard = () => {
   const [currentUnit, setCurrentUnit] = useState<keyof typeof UNITS>("unit1");
   const [wordsCompletedInUnit, setWordsCompletedInUnit] = useState(0);
   const [usedWords, setUsedWords] = useState<Set<string>>(new Set());
+  const [availableWords, setAvailableWords] = useState<string[]>([]);
 
   const scrambleWord = (word: string) => {
     return word
@@ -59,18 +60,25 @@ const GameBoard = () => {
       .sort(() => Math.random() - 0.5);
   };
 
+  const initializeAvailableWords = (unit: keyof typeof UNITS) => {
+    const words = [...UNITS[unit].words];
+    // Kelimeleri karıştır
+    for (let i = words.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [words[i], words[j]] = [words[j], words[i]];
+    }
+    setAvailableWords(words);
+    setUsedWords(new Set());
+  };
+
   const startNewRound = () => {
-    const currentUnitWords = UNITS[currentUnit].words;
-    const availableWords = currentUnitWords.filter(word => !usedWords.has(word));
-    
     if (availableWords.length === 0) {
-      // Eğer tüm kelimeler kullanıldıysa
       moveToNextUnit();
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * availableWords.length);
-    const word = availableWords[randomIndex];
+    const word = availableWords[0]; // Her zaman listedeki ilk kelimeyi al
+    setAvailableWords(prev => prev.slice(1)); // Kullanılan kelimeyi listeden çıkar
     setCurrentWord(word);
     setScrambledLetters(scrambleWord(word));
     setSelectedLetters([]);
@@ -85,7 +93,7 @@ const GameBoard = () => {
       const nextUnit = unitKeys[currentIndex + 1];
       setCurrentUnit(nextUnit);
       setWordsCompletedInUnit(0);
-      setUsedWords(new Set()); // Yeni üniteye geçerken kullanılan kelimeleri sıfırla
+      initializeAvailableWords(nextUnit);
       toast.success(`Moving to new unit: ${UNITS[nextUnit].name}!`);
     } else {
       toast.success("Congratulations! You've completed all units!");
@@ -97,7 +105,7 @@ const GameBoard = () => {
     setWordsCompletedInUnit(0);
     setScore(0);
     setTimeLeft(isExtendedTime ? 120 : 60);
-    setUsedWords(new Set()); // Ünite değiştiğinde kullanılan kelimeleri sıfırla
+    initializeAvailableWords(unit);
     toast.success(`Switched to unit: ${UNITS[unit].name}`);
   };
 
@@ -108,7 +116,10 @@ const GameBoard = () => {
   };
 
   useEffect(() => {
-    startNewRound();
+    initializeAvailableWords(currentUnit);
+  }, [currentUnit]);
+
+  useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
