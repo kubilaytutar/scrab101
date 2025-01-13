@@ -5,15 +5,21 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useState } from "react";
 
 const Index = () => {
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-100 py-12 relative">
       <GameBoard />
       <div className="fixed bottom-4 right-4">
-        <Tooltip>
+        <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen}>
           <TooltipTrigger asChild>
-            <button className="p-2 rounded-full hover:bg-gray-200 transition-colors">
+            <button 
+              onClick={() => setIsTooltipOpen(!isTooltipOpen)}
+              className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+            >
               <Info className="w-6 h-6 text-gray-600" />
             </button>
           </TooltipTrigger>
