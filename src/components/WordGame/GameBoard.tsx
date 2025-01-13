@@ -4,21 +4,21 @@ import { Letter } from "./Letter";
 import { toast } from "sonner";
 
 const WORDS = [
-  "REACT",
-  "TYPESCRIPT",
-  "JAVASCRIPT",
-  "PROGRAMMING",
-  "DEVELOPER",
-  "CODE",
-  "WEB",
-  "DESIGN",
-  "COMPUTER",
-  "SOFTWARE",
-  "INTERFACE",
-  "DATABASE",
-  "FRONTEND",
-  "BACKEND",
-  "TESTING"
+  "APPLE",
+  "BANANA",
+  "ORANGE",
+  "GRAPE",
+  "LEMON",
+  "PEACH",
+  "CHERRY",
+  "MANGO",
+  "KIWI",
+  "MELON",
+  "PLUM",
+  "PEAR",
+  "BERRY",
+  "LIME",
+  "FIG"
 ];
 
 export const GameBoard = () => {
