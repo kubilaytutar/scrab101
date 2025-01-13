@@ -18,12 +18,6 @@ export const clickSound = createAudio("/1.mp3");
 export const tickSound = createAudio("/3.mp3");
 export const gameOverSound = createAudio("/4.mp3");
 
-// Initialize audio
-successSound.play();
-clickSound.play();
-tickSound.play();
-gameOverSound.play();
-
 export const UNITS = {
   unit1: {
     name: "School Life",

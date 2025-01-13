@@ -202,7 +202,7 @@ const GameBoard = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 1) {
+        if (prev <= 1 && !isGameOver) {
           clearInterval(timer);
           setIsGameOver(true);
           gameOverSound.play().catch(console.error);
