@@ -190,6 +190,8 @@ const GameBoard = () => {
           wrongAttempts={wrongAttempts}
           usedJokers={usedJokers}
           onTryAgain={handleTryAgain}
+          currentUnit={currentUnit}
+          onUnitSelect={handleUnitSelect}
         />
       ) : (
         <>

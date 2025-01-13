@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { UNITS } from "./gameData";
+import UnitSelector from "./UnitSelector";
 
 interface GameOverProps {
   score: number;
@@ -7,9 +9,19 @@ interface GameOverProps {
   wrongAttempts: number;
   usedJokers: number;
   onTryAgain: () => void;
+  currentUnit: keyof typeof UNITS;
+  onUnitSelect: (unit: keyof typeof UNITS) => void;
 }
 
-const GameOver = ({ score, wordsCompletedInUnit, wrongAttempts, usedJokers, onTryAgain }: GameOverProps) => (
+const GameOver = ({ 
+  score, 
+  wordsCompletedInUnit, 
+  wrongAttempts, 
+  usedJokers, 
+  onTryAgain,
+  currentUnit,
+  onUnitSelect 
+}: GameOverProps) => (
   <Card className="w-full p-6">
     <CardHeader>
       <CardTitle className="text-center text-2xl">Congratulations! 🎉</CardTitle>
@@ -39,6 +51,10 @@ const GameOver = ({ score, wordsCompletedInUnit, wrongAttempts, usedJokers, onTr
       <Button onClick={onTryAgain} className="w-full mt-4">
         Try Again
       </Button>
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold text-center mb-4">Choose a unit and try it again</h3>
+        <UnitSelector currentUnit={currentUnit} onUnitSelect={onUnitSelect} />
+      </div>
     </CardContent>
   </Card>
 );
