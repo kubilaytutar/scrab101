@@ -12,6 +12,7 @@ interface GameOverProps {
   currentUnit: keyof typeof UNITS;
   onUnitSelect: (unit: keyof typeof UNITS) => void;
   completedWords: string[];
+  bonusCount: number;
 }
 
 const GameOver = ({ 
@@ -22,7 +23,8 @@ const GameOver = ({
   onTryAgain,
   currentUnit,
   onUnitSelect,
-  completedWords
+  completedWords,
+  bonusCount
 }: GameOverProps) => (
   <Card className="w-full p-6">
     <CardHeader>
@@ -48,6 +50,10 @@ const GameOver = ({
         <div className="bg-gray-50 p-4 rounded-lg">
           <p className="text-gray-600">Jokers Used</p>
           <p className="text-2xl font-bold">{usedJokers}</p>
+        </div>
+        <div className="bg-gray-50 p-4 rounded-lg col-span-2">
+          <p className="text-gray-600">Bonus Time Earned</p>
+          <p className="text-2xl font-bold">{bonusCount} times</p>
         </div>
       </div>
       

@@ -51,6 +51,7 @@ const GameBoard = () => {
   const [hasBonusTimeForCurrentWord, setHasBonusTimeForCurrentWord] = useState(false);
   const [recentSuccesses, setRecentSuccesses] = useState<number[]>([]);
   const [completedWords, setCompletedWords] = useState<string[]>([]);
+  const [bonusCount, setBonusCount] = useState(0);
 
   useGameTimer({
     timeLeft,
@@ -156,7 +157,7 @@ const GameBoard = () => {
         toast.success("Correct!");
         setScore((prev) => prev + 10);
         setHasBonusTimeForCurrentWord(false);
-        setCompletedWords(prev => [...prev, currentWord]); // Add the completed word to the list
+        setCompletedWords(prev => [...prev, currentWord]);
         
         const newWordsCompleted = wordsCompletedInUnit + 1;
         if (newWordsCompleted >= UNITS[currentUnit].words.length) {
@@ -177,17 +178,17 @@ const GameBoard = () => {
       const now = Date.now();
       if (letter === currentWord[newSelected.length - 1]) {
         const newRecentSuccesses = [...recentSuccesses, now].filter(
-          time => now - time <= 3000 // Changed from 5000 to 3000 ms (3 seconds)
+          time => now - time <= 3000
         );
         setRecentSuccesses(newRecentSuccesses);
         
-        // Check if we have 3 successes within 3 seconds and haven't given bonus time for this word
         if (newRecentSuccesses.length >= 3 && !hasBonusTimeForCurrentWord) {
-          tickSound.pause(); // Stop the tick sound when bonus time is earned
-          setTimeLeft(prev => prev + 5); // Changed from 10 to 5 seconds
-          setRecentSuccesses([]); // Reset successes after adding bonus time
-          setHasBonusTimeForCurrentWord(true); // Mark that we've given bonus time for this word
-          toast.success("Bonus time! +5 seconds", { // Updated message
+          tickSound.pause();
+          setTimeLeft(prev => prev + 5);
+          setRecentSuccesses([]);
+          setHasBonusTimeForCurrentWord(true);
+          setBonusCount(prev => prev + 1);
+          toast.success("Bonus time! +5 seconds", {
             style: { background: '#22c55e', color: 'white' }
           });
         }
@@ -203,7 +204,8 @@ const GameBoard = () => {
     setWrongAttempts(0);
     setUsedJokers(0);
     setIsGameOver(false);
-    setCompletedWords([]); // Reset completed words
+    setCompletedWords([]);
+    setBonusCount(0);
     initializeAvailableWords(currentUnit, {
       setAvailableWords,
       setUsedWords,
@@ -227,6 +229,7 @@ const GameBoard = () => {
           currentUnit={currentUnit}
           onUnitSelect={handleUnitSelect}
           completedWords={completedWords}
+          bonusCount={bonusCount}
         />
       ) : (
         <>
