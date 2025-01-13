@@ -89,11 +89,11 @@ const GameBoard = () => {
           setJokerCount((prev) => prev - 1);
           setUsedJokers((prev) => prev + 1);
           setTimeLeft((prev) => Math.max(0, prev - 10));
-          toast.info("Joker kullanıldı! -10 saniye");
+          toast.info("Joker used! -10 seconds");
         }
       }
     } else if (jokerCount === 0) {
-      toast.error("Joker hakkınız kalmadı!");
+      toast.error("No jokers left!");
     }
   };
 
@@ -219,27 +219,27 @@ const GameBoard = () => {
       {isGameOver ? (
         <Card className="w-full p-6">
           <CardHeader>
-            <CardTitle className="text-center text-2xl">Tebrikler! 🎉</CardTitle>
+            <CardTitle className="text-center text-2xl">Congratulations! 🎉</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center mb-4">
-              <p className="text-gray-600">Harika bir performans gösterdin!</p>
+              <p className="text-gray-600">You showed an amazing performance!</p>
             </div>
             <div className="grid grid-cols-2 gap-4 text-center">
               <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-600">Puanın</p>
+                <p className="text-gray-600">Score</p>
                 <p className="text-2xl font-bold">{score}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-600">Tamamlanan Kelimeler</p>
+                <p className="text-gray-600">Words Completed</p>
                 <p className="text-2xl font-bold">{wordsCompletedInUnit}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-600">Yanlış Denemeler</p>
+                <p className="text-gray-600">Wrong Attempts</p>
                 <p className="text-2xl font-bold">{wrongAttempts}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-600">Kullanılan Jokerler</p>
+                <p className="text-gray-600">Jokers Used</p>
                 <p className="text-2xl font-bold">{usedJokers}</p>
               </div>
             </div>
@@ -247,7 +247,7 @@ const GameBoard = () => {
               onClick={handleTryAgain}
               className="w-full mt-4"
             >
-              Tekrar Dene
+              Try Again
             </Button>
           </CardContent>
         </Card>
@@ -292,7 +292,7 @@ const GameBoard = () => {
               variant="outline"
               className="mt-4"
             >
-              Joker Kullan (-10s)
+              Use Joker (-10s)
             </Button>
             {timeLeft === 0 && (
               <Button
