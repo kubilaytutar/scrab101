@@ -1,13 +1,28 @@
-export const successSound = new Audio("/2.mp3");
-export const clickSound = new Audio("/1.mp3");
-export const tickSound = new Audio("/3.mp3");
-export const gameOverSound = new Audio("/4.mp3");
+// Ses dosyalarını oluştur
+const createAudio = (src: string) => {
+  const audio = new Audio(src);
+  audio.load(); // Sesi önceden yükle
+  return {
+    play: () => {
+      audio.currentTime = 0; // Sesi başa sar
+      return audio.play().catch(error => {
+        console.error("Error playing sound:", error);
+      });
+    }
+  };
+};
+
+// Sesleri oluştur
+export const successSound = createAudio("/2.mp3");
+export const clickSound = createAudio("/1.mp3");
+export const tickSound = createAudio("/3.mp3");
+export const gameOverSound = createAudio("/4.mp3");
 
 // Initialize audio
-successSound.load();
-clickSound.load();
-tickSound.load();
-gameOverSound.load();
+successSound.play();
+clickSound.play();
+tickSound.play();
+gameOverSound.play();
 
 export const UNITS = {
   unit1: {
