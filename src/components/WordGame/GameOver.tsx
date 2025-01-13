@@ -51,9 +51,9 @@ const GameOver = ({
           <p className="text-gray-600">Jokers Used</p>
           <p className="text-2xl font-bold">{usedJokers}</p>
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg col-span-2">
-          <p className="text-gray-600">Bonus Time Earned</p>
-          <p className="text-2xl font-bold">{bonusCount} times</p>
+        <div className="bg-gray-50 p-4 rounded-lg col-span-2" style={{ background: '#22c55e', color: 'white' }}>
+          <p className="text-white">Bonus Time Earned</p>
+          <p className="text-2xl font-bold">+{bonusCount * 5} seconds ({bonusCount} times)</p>
         </div>
       </div>
       

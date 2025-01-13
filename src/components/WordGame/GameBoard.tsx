@@ -183,14 +183,23 @@ const GameBoard = () => {
         setRecentSuccesses(newRecentSuccesses);
         
         if (newRecentSuccesses.length >= 3 && !hasBonusTimeForCurrentWord) {
+          const bonusSeconds = 5;
           tickSound.pause();
-          setTimeLeft(prev => prev + 5);
+          tickSound.currentTime = 0; // Reset the sound
+          setTimeLeft(prev => prev + bonusSeconds);
           setRecentSuccesses([]);
           setHasBonusTimeForCurrentWord(true);
           setBonusCount(prev => prev + 1);
-          toast.success("Bonus time! +5 seconds", {
+          toast.success(`Bonus time! +${bonusSeconds} seconds`, {
             style: { background: '#22c55e', color: 'white' }
           });
+          
+          // Resume tick sound after a short delay if time is low
+          setTimeout(() => {
+            if (timeLeft <= 13) {
+              tickSound.play().catch(console.error);
+            }
+          }, 1000);
         }
       }
     }
