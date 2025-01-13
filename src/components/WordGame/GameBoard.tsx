@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Letter } from "./Letter";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import GameStats from "./GameStats";
 import GameOver from "./GameOver";
 import UnitSelector from "./UnitSelector";
 import WordDisplay from "./WordDisplay";
+import GameHeader from "./GameHeader";
+import GameControls from "./GameControls";
+import LettersDisplay from "./LettersDisplay";
 import { UNITS, successSound } from "./gameData";
 
 const GameBoard = () => {
@@ -195,78 +195,30 @@ const GameBoard = () => {
         />
       ) : (
         <>
-          <div className="text-center mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl font-bold text-gray-800 mb-4"
-            >
-              Unscramble
-            </motion.div>
-            <div className="text-xl font-semibold text-gray-600 mb-4">
-              Unit: {UNITS[currentUnit].name}
-            </div>
-            <GameStats
-              score={score}
-              timeLeft={timeLeft}
-              wordsCompletedInUnit={wordsCompletedInUnit}
-              totalWordsInUnit={UNITS[currentUnit].words.length}
-              jokerCount={jokerCount}
-            />
-            <div className="flex items-center justify-center gap-2 mt-4">
-              <span className="text-sm text-gray-600">60s</span>
-              <Switch
-                checked={isExtendedTime}
-                onCheckedChange={handleTimeToggle}
-              />
-              <span className="text-sm text-gray-600">120s</span>
-            </div>
-            <Button
-              onClick={useJoker}
-              disabled={jokerCount === 0}
-              variant="outline"
-              className="mt-4"
-            >
-              Use Joker (-10s)
-            </Button>
-            {timeLeft === 0 && (
-              <Button
-                onClick={handleTryAgain}
-                variant="default"
-                className="mt-4 ml-2"
-              >
-                Try Again
-              </Button>
-            )}
-          </div>
-
-          <motion.div
-            layout
-            className="bg-gray-50 rounded-xl p-8 shadow-lg mb-8"
-          >
+          <GameHeader currentUnit={currentUnit} />
+          <GameStats
+            score={score}
+            timeLeft={timeLeft}
+            wordsCompletedInUnit={wordsCompletedInUnit}
+            totalWordsInUnit={UNITS[currentUnit].words.length}
+            jokerCount={jokerCount}
+          />
+          <GameControls
+            isExtendedTime={isExtendedTime}
+            onTimeToggle={handleTimeToggle}
+            jokerCount={jokerCount}
+            onUseJoker={useJoker}
+            onTryAgain={handleTryAgain}
+            showTryAgain={timeLeft === 0}
+          />
+          <motion.div layout className="bg-gray-50 rounded-xl p-8 shadow-lg mb-8">
             <WordDisplay currentWord={currentWord} selectedLetters={selectedLetters} />
-
-            <div className="flex flex-wrap justify-center gap-3">
-              <AnimatePresence>
-                {scrambledLetters.map(({ letter, position }, index) => (
-                  <motion.div
-                    key={`${position}-${index}`}
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.5 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Letter
-                      letter={letter}
-                      onClick={() => handleLetterClick(letter, position)}
-                      isSelected={selectedPositions.includes(position)}
-                    />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+            <LettersDisplay
+              scrambledLetters={scrambledLetters}
+              selectedPositions={selectedPositions}
+              onLetterClick={handleLetterClick}
+            />
           </motion.div>
-
           <UnitSelector currentUnit={currentUnit} onUnitSelect={handleUnitSelect} />
         </>
       )}
