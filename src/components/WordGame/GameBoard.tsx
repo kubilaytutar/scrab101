@@ -206,7 +206,10 @@ const GameBoard = () => {
         if (prev <= 1 && !isGameOver) {
           clearInterval(timer);
           setIsGameOver(true);
-          gameOverSound.play().catch(console.error);
+          // Add 1 second delay before playing game over sound
+          setTimeout(() => {
+            gameOverSound.play().catch(console.error);
+          }, 1000);
           return 0;
         }
         if (prev <= 13 && prev > 0 && !isGameOver && !hasPlayedTickSound) {
