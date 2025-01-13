@@ -11,7 +11,7 @@ interface GameOverProps {
   onTryAgain: () => void;
   currentUnit: keyof typeof UNITS;
   onUnitSelect: (unit: keyof typeof UNITS) => void;
-  completedWords: string[];
+  attemptedWords: string[];
   bonusCount: number;
 }
 
@@ -23,7 +23,7 @@ const GameOver = ({
   onTryAgain,
   currentUnit,
   onUnitSelect,
-  completedWords,
+  attemptedWords = [], // Provide default empty array
   bonusCount
 }: GameOverProps) => (
   <Card className="w-full p-6">
@@ -57,12 +57,12 @@ const GameOver = ({
         </div>
       </div>
       
-      {completedWords.length > 0 && (
+      {attemptedWords.length > 0 && (
         <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-2">Completed Words:</h3>
+          <h3 className="text-lg font-semibold mb-2">Attempted Words:</h3>
           <div className="bg-gray-50 p-4 rounded-lg max-h-40 overflow-y-auto">
             <ul className="space-y-1">
-              {completedWords.map((word, index) => (
+              {attemptedWords.map((word, index) => (
                 <li key={index} className="text-gray-700">{word}</li>
               ))}
             </ul>
