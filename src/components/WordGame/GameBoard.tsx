@@ -44,7 +44,7 @@ const GameBoard = () => {
   const [scrambledLetters, setScrambledLetters] = useState<string[]>([]);
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(120); // Changed from 60 to 120 seconds
   const [currentUnit, setCurrentUnit] = useState<keyof typeof UNITS>("unit1");
   const [wordsCompletedInUnit, setWordsCompletedInUnit] = useState(0);
 
@@ -80,7 +80,7 @@ const GameBoard = () => {
     setCurrentUnit(unit);
     setWordsCompletedInUnit(0);
     setScore(0);
-    setTimeLeft(60);
+    setTimeLeft(120); // Changed from 60 to 120 seconds
     toast.success(`Switched to unit: ${UNITS[unit].name}`);
   };
 
@@ -142,7 +142,7 @@ const GameBoard = () => {
             Score: {score}
           </div>
           <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-            Time: {timeLeft}s
+            Time: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
           </div>
           <div className="bg-white rounded-lg px-4 py-2 shadow-md">
             Progress: {wordsCompletedInUnit}/{UNITS[currentUnit].words.length}
