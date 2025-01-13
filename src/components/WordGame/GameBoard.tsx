@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Letter } from "./Letter";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 const UNITS = {
   unit1: {
@@ -44,7 +45,8 @@ const GameBoard = () => {
   const [scrambledLetters, setScrambledLetters] = useState<string[]>([]);
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(120); // Changed from 60 to 120 seconds
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [isExtendedTime, setIsExtendedTime] = useState(false);
   const [currentUnit, setCurrentUnit] = useState<keyof typeof UNITS>("unit1");
   const [wordsCompletedInUnit, setWordsCompletedInUnit] = useState(0);
 
@@ -80,8 +82,14 @@ const GameBoard = () => {
     setCurrentUnit(unit);
     setWordsCompletedInUnit(0);
     setScore(0);
-    setTimeLeft(120); // Changed from 60 to 120 seconds
+    setTimeLeft(isExtendedTime ? 120 : 60);
     toast.success(`Switched to unit: ${UNITS[unit].name}`);
+  };
+
+  const handleTimeToggle = (checked: boolean) => {
+    setIsExtendedTime(checked);
+    setTimeLeft(checked ? 120 : 60);
+    toast.success(`Game time set to ${checked ? '120' : '60'} seconds`);
   };
 
   useEffect(() => {
@@ -147,6 +155,14 @@ const GameBoard = () => {
           <div className="bg-white rounded-lg px-4 py-2 shadow-md">
             Progress: {wordsCompletedInUnit}/{UNITS[currentUnit].words.length}
           </div>
+        </div>
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <span className="text-sm text-gray-600">60s</span>
+          <Switch
+            checked={isExtendedTime}
+            onCheckedChange={handleTimeToggle}
+          />
+          <span className="text-sm text-gray-600">120s</span>
         </div>
       </div>
 
