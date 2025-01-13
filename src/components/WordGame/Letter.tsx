@@ -10,7 +10,13 @@ interface LetterProps {
 export const Letter = ({ letter, onClick, isSelected }: LetterProps) => {
   const handleClick = () => {
     if (!isSelected && onClick) {
-      clickSound.play().catch(console.error);
+      // Play sound only on user interaction
+      const playPromise = clickSound.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Error playing sound:", error);
+        });
+      }
       onClick();
     }
   };

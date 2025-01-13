@@ -1,6 +1,10 @@
 export const successSound = new Audio("/success.mp3");
 export const clickSound = new Audio("/click.mp3");
 
+// Initialize audio
+successSound.load();
+clickSound.load();
+
 export const UNITS = {
   unit1: {
     name: "School Life",
