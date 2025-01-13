@@ -52,6 +52,7 @@ const GameBoard = () => {
   const [wordsCompletedInUnit, setWordsCompletedInUnit] = useState(0);
   const [usedWords, setUsedWords] = useState<Set<string>>(new Set());
   const [availableWords, setAvailableWords] = useState<string[]>([]);
+  const [jokerCount, setJokerCount] = useState(2);
 
   const scrambleWord = (word: string) => {
     return word
@@ -68,6 +69,25 @@ const GameBoard = () => {
     }
     setAvailableWords(words);
     setUsedWords(new Set());
+  };
+
+  const useJoker = () => {
+    if (jokerCount > 0 && currentWord) {
+      const nextLetter = currentWord[selectedLetters.length];
+      if (nextLetter) {
+        const position = scrambledLetters.findIndex(
+          (l) => l.letter === nextLetter && !selectedPositions.includes(l.position)
+        );
+        if (position !== -1) {
+          handleLetterClick(nextLetter, scrambledLetters[position].position);
+          setJokerCount((prev) => prev - 1);
+          setTimeLeft((prev) => Math.max(0, prev - 10));
+          toast.info("Joker kullanıldı! -10 saniye");
+        }
+      }
+    } else if (jokerCount === 0) {
+      toast.error("Joker hakkınız kalmadı!");
+    }
   };
 
   const startNewRound = () => {
@@ -193,6 +213,9 @@ const GameBoard = () => {
           <div className="bg-white rounded-lg px-4 py-2 shadow-md">
             Progress: {wordsCompletedInUnit}/{UNITS[currentUnit].words.length}
           </div>
+          <div className="bg-white rounded-lg px-4 py-2 shadow-md">
+            Joker: {jokerCount}
+          </div>
         </div>
         <div className="flex items-center justify-center gap-2 mt-4">
           <span className="text-sm text-gray-600">60s</span>
@@ -202,6 +225,14 @@ const GameBoard = () => {
           />
           <span className="text-sm text-gray-600">120s</span>
         </div>
+        <Button
+          onClick={useJoker}
+          disabled={jokerCount === 0}
+          variant="outline"
+          className="mt-4"
+        >
+          Joker Kullan (-10s)
+        </Button>
       </div>
 
       <motion.div
