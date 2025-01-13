@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import GameStats from "./GameStats";
 import GameOver from "./GameOver";
@@ -9,49 +8,43 @@ import GameHeader from "./GameHeader";
 import GameControls from "./GameControls";
 import LettersDisplay from "./LettersDisplay";
 import { UNITS, successSound } from "./gameData";
+import { useGameState } from "./hooks/useGameState";
+import { initializeAvailableWords, scrambleWord } from "./utils/gameUtils";
 
 const GameBoard = () => {
-  const [currentWord, setCurrentWord] = useState("");
-  const [scrambledLetters, setScrambledLetters] = useState<Array<{ letter: string; position: number }>>([]);
-  const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
-  const [selectedPositions, setSelectedPositions] = useState<number[]>([]);
-  const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [isExtendedTime, setIsExtendedTime] = useState(false);
-  const [currentUnit, setCurrentUnit] = useState<keyof typeof UNITS>("unit1");
-  const [wordsCompletedInUnit, setWordsCompletedInUnit] = useState(0);
-  const [usedWords, setUsedWords] = useState<Set<string>>(new Set());
-  const [availableWords, setAvailableWords] = useState<string[]>([]);
-  const [jokerCount, setJokerCount] = useState(2);
-  const [wrongAttempts, setWrongAttempts] = useState(0);
-  const [usedJokers, setUsedJokers] = useState(0);
-  const [isGameOver, setIsGameOver] = useState(false);
-
-  const scrambleWord = (word: string) => {
-    return word
-      .split("")
-      .map((letter, index) => ({ letter: letter.toUpperCase(), position: index }))
-      .sort(() => Math.random() - 0.5);
-  };
-
-  const initializeAvailableWords = (unit: keyof typeof UNITS) => {
-    const words = [...UNITS[unit].words];
-    for (let i = words.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [words[i], words[j]] = [words[j], words[i]];
-    }
-    setAvailableWords(words);
-    setUsedWords(new Set());
-    if (words.length > 0) {
-      const firstWord = words[0];
-      setCurrentWord(firstWord);
-      setScrambledLetters(scrambleWord(firstWord));
-      setSelectedLetters([]);
-      setSelectedPositions([]);
-      setAvailableWords(words.slice(1));
-      setUsedWords(new Set([firstWord]));
-    }
-  };
+  const gameState = useGameState();
+  const {
+    currentWord,
+    setCurrentWord,
+    scrambledLetters,
+    setScrambledLetters,
+    selectedLetters,
+    setSelectedLetters,
+    selectedPositions,
+    setSelectedPositions,
+    score,
+    setScore,
+    timeLeft,
+    setTimeLeft,
+    isExtendedTime,
+    setIsExtendedTime,
+    currentUnit,
+    setCurrentUnit,
+    wordsCompletedInUnit,
+    setWordsCompletedInUnit,
+    usedWords,
+    setUsedWords,
+    availableWords,
+    setAvailableWords,
+    jokerCount,
+    setJokerCount,
+    wrongAttempts,
+    setWrongAttempts,
+    usedJokers,
+    setUsedJokers,
+    isGameOver,
+    setIsGameOver,
+  } = gameState;
 
   const useJoker = () => {
     if (jokerCount > 0 && currentWord) {
@@ -95,7 +88,14 @@ const GameBoard = () => {
       const nextUnit = unitKeys[currentIndex + 1];
       setCurrentUnit(nextUnit);
       setWordsCompletedInUnit(0);
-      initializeAvailableWords(nextUnit);
+      initializeAvailableWords(nextUnit, {
+        setAvailableWords,
+        setUsedWords,
+        setCurrentWord,
+        setScrambledLetters,
+        setSelectedLetters,
+        setSelectedPositions,
+      });
       toast.success(`Moving to new unit: ${UNITS[nextUnit].name}!`);
     } else {
       toast.success("Congratulations! You've completed all units!");
@@ -113,7 +113,14 @@ const GameBoard = () => {
     setJokerCount(2);
     setSelectedLetters([]);
     setSelectedPositions([]);
-    initializeAvailableWords(unit);
+    initializeAvailableWords(unit, {
+      setAvailableWords,
+      setUsedWords,
+      setCurrentWord,
+      setScrambledLetters,
+      setSelectedLetters,
+      setSelectedPositions,
+    });
     toast.success(`Switched to unit: ${UNITS[unit].name}`);
   };
 
@@ -164,12 +171,26 @@ const GameBoard = () => {
     setWrongAttempts(0);
     setUsedJokers(0);
     setIsGameOver(false);
-    initializeAvailableWords(currentUnit);
+    initializeAvailableWords(currentUnit, {
+      setAvailableWords,
+      setUsedWords,
+      setCurrentWord,
+      setScrambledLetters,
+      setSelectedLetters,
+      setSelectedPositions,
+    });
     toast.success("Game restarted! Good luck!");
   };
 
   useEffect(() => {
-    initializeAvailableWords(currentUnit);
+    initializeAvailableWords(currentUnit, {
+      setAvailableWords,
+      setUsedWords,
+      setCurrentWord,
+      setScrambledLetters,
+      setSelectedLetters,
+      setSelectedPositions,
+    });
   }, [currentUnit]);
 
   useEffect(() => {
@@ -223,14 +244,12 @@ const GameBoard = () => {
             onTryAgain={handleTryAgain}
             showTryAgain={timeLeft === 0}
           />
-          <motion.div layout className="bg-gray-50 rounded-xl p-8 shadow-lg mb-8">
-            <WordDisplay currentWord={currentWord} selectedLetters={selectedLetters} />
-            <LettersDisplay
-              scrambledLetters={scrambledLetters}
-              selectedPositions={selectedPositions}
-              onLetterClick={handleLetterClick}
-            />
-          </motion.div>
+          <WordDisplay currentWord={currentWord} selectedLetters={selectedLetters} />
+          <LettersDisplay
+            scrambledLetters={scrambledLetters}
+            selectedPositions={selectedPositions}
+            onLetterClick={handleLetterClick}
+          />
           <UnitSelector currentUnit={currentUnit} onUnitSelect={handleUnitSelect} />
         </>
       )}
