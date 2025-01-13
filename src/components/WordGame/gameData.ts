@@ -3,13 +3,11 @@ const createAudio = (src: string) => {
   audio.preload = "auto";
   return {
     play: () => {
-      try {
+      if (audio.readyState >= 2) { // HAVE_CURRENT_DATA or better
         audio.currentTime = 0;
         return audio.play();
-      } catch (error) {
-        console.error("Ses çalma hatası:", error);
-        return Promise.reject(error);
       }
+      return Promise.reject(new Error("Audio not ready"));
     }
   };
 };
