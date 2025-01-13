@@ -149,7 +149,7 @@ const GameBoard = () => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          toast("Game Over! Final score: " + score);
+          toast.info("Game Over! Final score: " + score);
           return 0;
         }
         return prev - 1;
@@ -188,6 +188,15 @@ const GameBoard = () => {
         }, 1000);
       }
     }
+  };
+
+  const handleTryAgain = () => {
+    setScore(0);
+    setTimeLeft(isExtendedTime ? 120 : 60);
+    setJokerCount(2);
+    setWordsCompletedInUnit(0);
+    initializeAvailableWords(currentUnit);
+    toast.success("Game restarted! Good luck!");
   };
 
   return (
@@ -233,6 +242,15 @@ const GameBoard = () => {
         >
           Joker Kullan (-10s)
         </Button>
+        {timeLeft === 0 && (
+          <Button
+            onClick={handleTryAgain}
+            variant="default"
+            className="mt-4 ml-2"
+          >
+            Try Again
+          </Button>
+        )}
       </div>
 
       <motion.div
