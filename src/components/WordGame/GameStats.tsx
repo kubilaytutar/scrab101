@@ -23,9 +23,10 @@ const GameStats = ({ score, timeLeft, wordsCompletedInUnit, totalWordsInUnit, jo
     
     if (timeLeft > prevTimeLeft) {
       setIsTimeAdded(true);
+      // Reset the green color after 10 seconds
       timeoutId = setTimeout(() => {
         setIsTimeAdded(false);
-      }, 1000);
+      }, 10000); // Changed from 1000 to 10000 ms (10 seconds)
     }
     
     setPrevTimeLeft(timeLeft);
