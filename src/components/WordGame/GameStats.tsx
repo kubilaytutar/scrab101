@@ -23,11 +23,11 @@ const GameStats = ({ score, timeLeft, wordsCompletedInUnit, totalWordsInUnit, jo
     
     if (timeLeft > prevTimeLeft) {
       setIsTimeAdded(true);
-      setBonusEndTime(Date.now() + 5000); // Changed from 10000 to 5000 ms
+      setBonusEndTime(Date.now() + 5000);
       
       timeoutId = setTimeout(() => {
         setIsTimeAdded(false);
-      }, 5000); // Changed from 10000 to 5000 ms
+      }, 5000);
     }
     
     setPrevTimeLeft(timeLeft);
@@ -50,9 +50,8 @@ const GameStats = ({ score, timeLeft, wordsCompletedInUnit, totalWordsInUnit, jo
         Score: {score}
       </div>
       <motion.div 
-        className={`bg-white rounded-lg px-4 py-2 shadow-md ${
-          isLastTenSeconds ? 'text-[#ea384c] font-bold animate-pulse' : 
-          isTimeAdded ? 'text-green-500 font-bold' : ''
+        className={`rounded-lg px-4 py-2 shadow-md ${
+          isLastTenSeconds ? 'text-[#ea384c] font-bold animate-pulse' : ''
         }`}
         animate={{
           backgroundColor: isTimeAdded ? '#22c55e' : 'white',
