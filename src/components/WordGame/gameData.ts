@@ -58,6 +58,7 @@ export const clickSound = createAudio("/click.mp3");
 export const successSound = createAudio("/success.mp3");
 export const tickSound = createAudio("/tick.mp3");
 export const gameOverSound = createAudio("/4.mp3");
+export const wrongSound = createAudio("/3.mp3");
 
 export const UNITS = {
   unit1: {

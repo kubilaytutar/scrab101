@@ -7,7 +7,7 @@ import WordDisplay from "./WordDisplay";
 import GameHeader from "./GameHeader";
 import GameControls from "./GameControls";
 import LettersDisplay from "./LettersDisplay";
-import { UNITS, successSound, tickSound } from "./gameData";
+import { UNITS, successSound, tickSound, wrongSound } from "./gameData";
 import { useGameState } from "./hooks/useGameState";
 import { useGameTimer } from "./hooks/useGameTimer";
 import { useWordManagement } from "./hooks/useWordManagement";
@@ -167,6 +167,7 @@ const GameBoard = () => {
           setTimeout(startNewRound, 1000);
         }
       } else {
+        wrongSound.play().catch(console.error);
         toast.error("Try again!");
         setWrongAttempts((prev) => prev + 1);
         setTimeout(() => {
@@ -185,7 +186,7 @@ const GameBoard = () => {
         if (newRecentSuccesses.length >= 3 && !hasBonusTimeForCurrentWord) {
           const bonusSeconds = 5;
           tickSound.pause();
-          tickSound.currentTime = 0; // Reset the sound
+          tickSound.currentTime = 0;
           setTimeLeft(prev => prev + bonusSeconds);
           setRecentSuccesses([]);
           setHasBonusTimeForCurrentWord(true);
@@ -194,7 +195,6 @@ const GameBoard = () => {
             style: { background: '#22c55e', color: 'white' }
           });
           
-          // Resume tick sound after a short delay if time is low
           setTimeout(() => {
             if (timeLeft <= 13) {
               tickSound.play().catch(console.error);
