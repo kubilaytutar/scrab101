@@ -11,6 +11,7 @@ interface GameOverProps {
   onTryAgain: () => void;
   currentUnit: keyof typeof UNITS;
   onUnitSelect: (unit: keyof typeof UNITS) => void;
+  completedWords: string[];
 }
 
 const GameOver = ({ 
@@ -20,7 +21,8 @@ const GameOver = ({
   usedJokers, 
   onTryAgain,
   currentUnit,
-  onUnitSelect 
+  onUnitSelect,
+  completedWords
 }: GameOverProps) => (
   <Card className="w-full p-6">
     <CardHeader>
@@ -48,6 +50,20 @@ const GameOver = ({
           <p className="text-2xl font-bold">{usedJokers}</p>
         </div>
       </div>
+      
+      {completedWords.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-2">Completed Words:</h3>
+          <div className="bg-gray-50 p-4 rounded-lg max-h-40 overflow-y-auto">
+            <ul className="space-y-1">
+              {completedWords.map((word, index) => (
+                <li key={index} className="text-gray-700">{word}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
       <Button onClick={onTryAgain} className="w-full mt-4">
         Try Again
       </Button>

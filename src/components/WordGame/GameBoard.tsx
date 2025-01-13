@@ -50,6 +50,7 @@ const GameBoard = () => {
 
   const [hasBonusTimeForCurrentWord, setHasBonusTimeForCurrentWord] = useState(false);
   const [recentSuccesses, setRecentSuccesses] = useState<number[]>([]);
+  const [completedWords, setCompletedWords] = useState<string[]>([]);
 
   useGameTimer({
     timeLeft,
@@ -154,7 +155,8 @@ const GameBoard = () => {
         successSound.play().catch(console.error);
         toast.success("Correct!");
         setScore((prev) => prev + 10);
-        setHasBonusTimeForCurrentWord(false); // Reset for next word
+        setHasBonusTimeForCurrentWord(false);
+        setCompletedWords(prev => [...prev, currentWord]); // Add the completed word to the list
         
         const newWordsCompleted = wordsCompletedInUnit + 1;
         if (newWordsCompleted >= UNITS[currentUnit].words.length) {
@@ -201,6 +203,7 @@ const GameBoard = () => {
     setWrongAttempts(0);
     setUsedJokers(0);
     setIsGameOver(false);
+    setCompletedWords([]); // Reset completed words
     initializeAvailableWords(currentUnit, {
       setAvailableWords,
       setUsedWords,
@@ -223,6 +226,7 @@ const GameBoard = () => {
           onTryAgain={handleTryAgain}
           currentUnit={currentUnit}
           onUnitSelect={handleUnitSelect}
+          completedWords={completedWords}
         />
       ) : (
         <>
