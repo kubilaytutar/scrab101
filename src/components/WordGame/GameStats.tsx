@@ -11,28 +11,29 @@ interface GameStatsProps {
 
 const GameStats = ({ score, timeLeft, wordsCompletedInUnit, totalWordsInUnit, jokerCount }: GameStatsProps) => {
   const [isTimeAdded, setIsTimeAdded] = useState(false);
+  const [prevTimeLeft, setPrevTimeLeft] = useState(timeLeft);
   const isLastTenSeconds = timeLeft <= 10;
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
-  // Track timeLeft changes to show green animation
+  // Track timeLeft changes to show green animation only when time increases
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     
-    const handleTimeChange = () => {
+    if (timeLeft > prevTimeLeft) {
       setIsTimeAdded(true);
       timeoutId = setTimeout(() => {
         setIsTimeAdded(false);
       }, 1000);
-    };
-
-    handleTimeChange();
+    }
+    
+    setPrevTimeLeft(timeLeft);
     
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [timeLeft]);
+  }, [timeLeft, prevTimeLeft]);
 
   return (
     <div className="flex justify-center gap-4 text-lg">
