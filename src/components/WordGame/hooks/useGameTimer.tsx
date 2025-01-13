@@ -17,9 +17,16 @@ export const useGameTimer = ({
   useEffect(() => {
     let hasPlayedTickSound = false;
     const timer = setInterval(() => {
+      if (isGameOver) {
+        tickSound.pause();
+        clearInterval(timer);
+        return;
+      }
+
       setTimeLeft((prev) => {
         if (prev <= 1 && !isGameOver) {
           clearInterval(timer);
+          tickSound.pause();
           setIsGameOver(true);
           // Play game over sound immediately
           requestAnimationFrame(() => {
@@ -39,14 +46,13 @@ export const useGameTimer = ({
           hasPlayedTickSound = true;
         }
         
-        if (isGameOver) {
-          clearInterval(timer);
-          return prev;
-        }
         return prev - 1;
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      tickSound.pause();
+    };
   }, [isGameOver, setIsGameOver, setTimeLeft]);
 };
