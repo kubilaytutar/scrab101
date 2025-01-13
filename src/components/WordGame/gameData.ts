@@ -1,9 +1,11 @@
 export const successSound = new Audio("/success.mp3");
 export const clickSound = new Audio("/click.mp3");
+export const tickSound = new Audio("/tick.mp3");
 
 // Initialize audio
 successSound.load();
 clickSound.load();
+tickSound.load();
 
 export const UNITS = {
   unit1: {

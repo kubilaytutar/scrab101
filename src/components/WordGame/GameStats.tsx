@@ -8,21 +8,28 @@ interface GameStatsProps {
   jokerCount: number;
 }
 
-const GameStats = ({ score, timeLeft, wordsCompletedInUnit, totalWordsInUnit, jokerCount }: GameStatsProps) => (
-  <div className="flex justify-center gap-4 text-lg">
-    <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-      Score: {score}
+const GameStats = ({ score, timeLeft, wordsCompletedInUnit, totalWordsInUnit, jokerCount }: GameStatsProps) => {
+  const isLastTenSeconds = timeLeft <= 10;
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+  return (
+    <div className="flex justify-center gap-4 text-lg">
+      <div className="bg-white rounded-lg px-4 py-2 shadow-md">
+        Score: {score}
+      </div>
+      <div className={`bg-white rounded-lg px-4 py-2 shadow-md ${isLastTenSeconds ? 'text-[#ea384c] font-bold animate-pulse' : ''}`}>
+        Time: {formattedTime}
+      </div>
+      <div className="bg-white rounded-lg px-4 py-2 shadow-md">
+        Progress: {wordsCompletedInUnit}/{totalWordsInUnit}
+      </div>
+      <div className="bg-white rounded-lg px-4 py-2 shadow-md">
+        Joker: {jokerCount}
+      </div>
     </div>
-    <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-      Time: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-    </div>
-    <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-      Progress: {wordsCompletedInUnit}/{totalWordsInUnit}
-    </div>
-    <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-      Joker: {jokerCount}
-    </div>
-  </div>
-);
+  );
+};
 
 export default GameStats;
