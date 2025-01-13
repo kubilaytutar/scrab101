@@ -1,10 +1,24 @@
 import { UNITS } from "../gameData";
 
 export const scrambleWord = (word: string) => {
-  return word
-    .split("")
-    .map((letter, index) => ({ letter: letter.toUpperCase(), position: index }))
-    .sort(() => Math.random() - 0.5);
+  const letters = word.split("")
+    .map((letter, index) => ({ 
+      letter: letter.toUpperCase(), 
+      position: index,
+      random: Math.random() 
+    }))
+    .sort((a, b) => a.random - b.random)
+    .map((item, index) => ({
+      letter: item.letter,
+      position: index
+    }));
+
+  // If the scrambled word is the same as original, scramble again
+  if (letters.map(l => l.letter).join("") === word.toUpperCase()) {
+    return scrambleWord(word);
+  }
+
+  return letters;
 };
 
 export const initializeAvailableWords = (

@@ -12,21 +12,22 @@ interface GameStatsProps {
 const GameStats = ({ score, timeLeft, wordsCompletedInUnit, totalWordsInUnit, jokerCount }: GameStatsProps) => {
   const [isTimeAdded, setIsTimeAdded] = useState(false);
   const [prevTimeLeft, setPrevTimeLeft] = useState(timeLeft);
+  const [bonusEndTime, setBonusEndTime] = useState<number | null>(null);
   const isLastTenSeconds = timeLeft <= 10;
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
-  // Track timeLeft changes to show green animation only when time increases
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     
     if (timeLeft > prevTimeLeft) {
       setIsTimeAdded(true);
-      // Reset the green color after 10 seconds
+      setBonusEndTime(Date.now() + 10000); // Set end time 10 seconds from now
+      
       timeoutId = setTimeout(() => {
         setIsTimeAdded(false);
-      }, 10000); // Changed from 1000 to 10000 ms (10 seconds)
+      }, 10000);
     }
     
     setPrevTimeLeft(timeLeft);
@@ -35,6 +36,14 @@ const GameStats = ({ score, timeLeft, wordsCompletedInUnit, totalWordsInUnit, jo
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, [timeLeft, prevTimeLeft]);
+
+  // Check if bonus time has expired
+  useEffect(() => {
+    if (bonusEndTime && Date.now() >= bonusEndTime) {
+      setIsTimeAdded(false);
+      setBonusEndTime(null);
+    }
+  }, [timeLeft, bonusEndTime]);
 
   return (
     <div className="flex justify-center gap-4 text-lg">

@@ -48,6 +48,7 @@ const GameBoard = () => {
     setIsGameOver,
   } = gameState;
 
+  const [hasBonusTimeForCurrentWord, setHasBonusTimeForCurrentWord] = useState(false);
   const [recentSuccesses, setRecentSuccesses] = useState<number[]>([]);
 
   useGameTimer({
@@ -153,22 +154,7 @@ const GameBoard = () => {
         successSound.play().catch(console.error);
         toast.success("Correct!");
         setScore((prev) => prev + 10);
-        
-        // Add timestamp of successful letter
-        const now = Date.now();
-        const newRecentSuccesses = [...recentSuccesses, now].filter(
-          time => now - time <= 5000 // Keep only successes within last 5 seconds
-        );
-        setRecentSuccesses(newRecentSuccesses);
-        
-        // Check if we have 3 successes within 5 seconds
-        if (newRecentSuccesses.length >= 3) {
-          setTimeLeft(prev => prev + 10);
-          setRecentSuccesses([]); // Reset successes after adding bonus time
-          toast.success("Bonus time! +10 seconds", {
-            style: { background: '#22c55e', color: 'white' }
-          });
-        }
+        setHasBonusTimeForCurrentWord(false); // Reset for next word
         
         const newWordsCompleted = wordsCompletedInUnit + 1;
         if (newWordsCompleted >= UNITS[currentUnit].words.length) {
@@ -194,10 +180,11 @@ const GameBoard = () => {
         );
         setRecentSuccesses(newRecentSuccesses);
         
-        // Check if we have 3 successes within 5 seconds
-        if (newRecentSuccesses.length >= 3) {
+        // Check if we have 3 successes within 5 seconds and haven't given bonus time for this word
+        if (newRecentSuccesses.length >= 3 && !hasBonusTimeForCurrentWord) {
           setTimeLeft(prev => prev + 10);
           setRecentSuccesses([]); // Reset successes after adding bonus time
+          setHasBonusTimeForCurrentWord(true); // Mark that we've given bonus time for this word
           toast.success("Bonus time! +10 seconds", {
             style: { background: '#22c55e', color: 'white' }
           });
