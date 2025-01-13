@@ -25,6 +25,10 @@ const createAudio = (src: string) => {
           resolve();
         }
       });
+    },
+    pause: () => {
+      audio.pause();
+      audio.currentTime = 0;
     }
   };
 };
