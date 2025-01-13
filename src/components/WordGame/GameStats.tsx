@@ -23,11 +23,11 @@ const GameStats = ({ score, timeLeft, wordsCompletedInUnit, totalWordsInUnit, jo
     
     if (timeLeft > prevTimeLeft) {
       setIsTimeAdded(true);
-      setBonusEndTime(Date.now() + 10000); // Set end time 10 seconds from now
+      setBonusEndTime(Date.now() + 5000); // Changed from 10000 to 5000 ms
       
       timeoutId = setTimeout(() => {
         setIsTimeAdded(false);
-      }, 10000);
+      }, 5000); // Changed from 10000 to 5000 ms
     }
     
     setPrevTimeLeft(timeLeft);
@@ -37,7 +37,6 @@ const GameStats = ({ score, timeLeft, wordsCompletedInUnit, totalWordsInUnit, jo
     };
   }, [timeLeft, prevTimeLeft]);
 
-  // Check if bonus time has expired
   useEffect(() => {
     if (bonusEndTime && Date.now() >= bonusEndTime) {
       setIsTimeAdded(false);

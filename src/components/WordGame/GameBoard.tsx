@@ -181,10 +181,10 @@ const GameBoard = () => {
         
         // Check if we have 3 successes within 3 seconds and haven't given bonus time for this word
         if (newRecentSuccesses.length >= 3 && !hasBonusTimeForCurrentWord) {
-          setTimeLeft(prev => prev + 10);
+          setTimeLeft(prev => prev + 5); // Changed from 10 to 5 seconds
           setRecentSuccesses([]); // Reset successes after adding bonus time
           setHasBonusTimeForCurrentWord(true); // Mark that we've given bonus time for this word
-          toast.success("Bonus time! +10 seconds", {
+          toast.success("Bonus time! +5 seconds", { // Updated message
             style: { background: '#22c55e', color: 'white' }
           });
         }
