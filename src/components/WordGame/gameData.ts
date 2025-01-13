@@ -1,11 +1,14 @@
 const createAudio = (src: string) => {
   const audio = new Audio(src);
-  audio.load(); // Sesi önceden yükle
+  
+  // Sesi önceden yükle
+  audio.preload = "auto";
+  audio.load();
   
   return {
     play: () => {
       return new Promise<void>((resolve, reject) => {
-        // Kullanıcı etkileşimi sonrası sesi baştan başlat
+        // Sesi baştan başlat
         audio.currentTime = 0;
         
         // Ses çalma işlemini promise olarak döndür
