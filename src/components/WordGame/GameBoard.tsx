@@ -211,6 +211,10 @@ const GameBoard = () => {
         if (prev <= 10 && prev > 0 && !isGameOver) {
           tickSound.play().catch(console.error);
         }
+        if (isGameOver) {
+          clearInterval(timer);
+          return prev;
+        }
         return prev - 1;
       });
     }, 1000);
