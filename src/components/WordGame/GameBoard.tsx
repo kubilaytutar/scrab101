@@ -152,7 +152,9 @@ const GameBoard = () => {
 
     const attemptedWord = newSelected.join("");
     if (attemptedWord.length === currentWord.length) {
-      setAttemptedWords(prev => [...prev, currentWord]);
+      // Use Set to ensure uniqueness when adding the current word
+      setAttemptedWords(prev => Array.from(new Set([...prev, currentWord])));
+      
       if (attemptedWord === currentWord) {
         successSound.play().catch(console.error);
         toast.success("Correct!");
