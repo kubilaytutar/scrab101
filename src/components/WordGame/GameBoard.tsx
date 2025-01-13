@@ -4,28 +4,24 @@ import { Letter } from "./Letter";
 import { toast } from "sonner";
 
 const UNITS = {
-  animals: {
-    name: "Animals",
-    words: ["LION", "TIGER", "BEAR", "ELEPHANT", "GIRAFFE", "MONKEY", "ZEBRA", "PENGUIN", "KANGAROO", "DOLPHIN"]
-  },
-  fruits: {
-    name: "Fruits",
+  unit1: {
+    name: "Unit 1",
     words: ["APPLE", "BANANA", "ORANGE", "GRAPE", "MANGO", "KIWI", "PEAR", "PEACH", "PLUM", "CHERRY"]
   },
-  vegetables: {
-    name: "Vegetables",
+  unit2: {
+    name: "Unit 2",
     words: ["CARROT", "POTATO", "TOMATO", "ONION", "PEPPER", "LETTUCE", "CUCUMBER", "BROCCOLI", "CORN", "SPINACH"]
   },
-  colors: {
-    name: "Colors",
+  unit3: {
+    name: "Unit 3",
     words: ["RED", "BLUE", "GREEN", "YELLOW", "PURPLE", "ORANGE", "BROWN", "BLACK", "WHITE", "PINK"]
   },
-  jobs: {
-    name: "Jobs",
+  unit4: {
+    name: "Unit 4",
     words: ["DOCTOR", "TEACHER", "PILOT", "CHEF", "NURSE", "ARTIST", "LAWYER", "DRIVER", "WRITER", "ACTOR"]
   },
-  countries: {
-    name: "Countries",
+  unit5: {
+    name: "Unit 5",
     words: ["TURKEY", "ENGLAND", "FRANCE", "SPAIN", "ITALY", "JAPAN", "CHINA", "BRAZIL", "CANADA", "EGYPT"]
   }
 };
@@ -36,7 +32,7 @@ export const GameBoard = () => {
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
-  const [currentUnit, setCurrentUnit] = useState<keyof typeof UNITS>("fruits");
+  const [currentUnit, setCurrentUnit] = useState<keyof typeof UNITS>("unit1");
   const [wordsCompletedInUnit, setWordsCompletedInUnit] = useState(0);
 
   const scrambleWord = (word: string) => {
