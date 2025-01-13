@@ -172,15 +172,14 @@ const GameBoard = () => {
         }, 1000);
       }
     } else {
-      // Add timestamp for each correct letter placement
       const now = Date.now();
       if (letter === currentWord[newSelected.length - 1]) {
         const newRecentSuccesses = [...recentSuccesses, now].filter(
-          time => now - time <= 5000
+          time => now - time <= 3000 // Changed from 5000 to 3000 ms (3 seconds)
         );
         setRecentSuccesses(newRecentSuccesses);
         
-        // Check if we have 3 successes within 5 seconds and haven't given bonus time for this word
+        // Check if we have 3 successes within 3 seconds and haven't given bonus time for this word
         if (newRecentSuccesses.length >= 3 && !hasBonusTimeForCurrentWord) {
           setTimeLeft(prev => prev + 10);
           setRecentSuccesses([]); // Reset successes after adding bonus time

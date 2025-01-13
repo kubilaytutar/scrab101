@@ -1,29 +1,54 @@
 import { UNITS } from "../gameData";
 
 export const scrambleWord = (word: string) => {
+  // Create array of letter objects with random values
   const letters = word.split("")
     .map((letter, index) => ({ 
       letter: letter.toUpperCase(), 
       position: index,
       random: Math.random() 
-    }))
+    }));
+
+  // Sort by random value to scramble
+  let scrambledLetters = letters
     .sort((a, b) => a.random - b.random)
     .map((item, index) => ({
       letter: item.letter,
       position: index
     }));
 
-  // If the scrambled word is the same as original, scramble again
-  if (letters.map(l => l.letter).join("") === word.toUpperCase()) {
+  // Check if scrambled word matches original or is too similar
+  const scrambledWord = scrambledLetters.map(l => l.letter).join("");
+  const originalWord = word.toUpperCase();
+  
+  // If scrambled version is too similar to original, try again
+  if (scrambledWord === originalWord || 
+      countMatchingPositions(scrambledWord, originalWord) > word.length / 2) {
     return scrambleWord(word);
   }
 
-  return letters;
+  return scrambledLetters;
+};
+
+// Helper function to count matching letter positions
+const countMatchingPositions = (word1: string, word2: string) => {
+  let matches = 0;
+  for (let i = 0; i < word1.length; i++) {
+    if (word1[i] === word2[i]) matches++;
+  }
+  return matches;
 };
 
 export const initializeAvailableWords = (
-  unit: keyof typeof UNITS,
-  setters: {
+  currentUnit: keyof typeof UNITS,
+  {
+    setAvailableWords,
+    setUsedWords,
+    setCurrentWord,
+    setScrambledLetters,
+    setSelectedLetters,
+    setSelectedPositions,
+  }: {
     setAvailableWords: (words: string[]) => void;
     setUsedWords: (words: Set<string>) => void;
     setCurrentWord: (word: string) => void;
@@ -32,22 +57,8 @@ export const initializeAvailableWords = (
     setSelectedPositions: (positions: number[]) => void;
   }
 ) => {
-  const words = [...UNITS[unit].words];
-  for (let i = words.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [words[i], words[j]] = [words[j], words[i]];
-  }
-  
-  setters.setAvailableWords(words);
-  setters.setUsedWords(new Set());
-  
-  if (words.length > 0) {
-    const firstWord = words[0];
-    setters.setCurrentWord(firstWord);
-    setters.setScrambledLetters(scrambleWord(firstWord));
-    setters.setSelectedLetters([]);
-    setters.setSelectedPositions([]);
-    setters.setAvailableWords(words.slice(1));
-    setters.setUsedWords(new Set([firstWord]));
-  }
+  const words = UNITS[currentUnit].words;
+  setAvailableWords(words);
+  setUsedWords(new Set());
+  startNewRound();
 };
