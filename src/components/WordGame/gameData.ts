@@ -43,6 +43,12 @@ const createAudio = (src: string) => {
     pause: () => {
       audio.pause();
       audio.currentTime = 0;
+    },
+    get currentTime() {
+      return audio.currentTime;
+    },
+    set currentTime(value: number) {
+      audio.currentTime = value;
     }
   };
 };
