@@ -42,8 +42,9 @@ const UNITS = {
 
 const GameBoard = () => {
   const [currentWord, setCurrentWord] = useState("");
-  const [scrambledLetters, setScrambledLetters] = useState<string[]>([]);
+  const [scrambledLetters, setScrambledLetters] = useState<Array<{ letter: string; position: number }>>([]);
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
+  const [selectedPositions, setSelectedPositions] = useState<number[]>([]);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
   const [isExtendedTime, setIsExtendedTime] = useState(false);
@@ -53,8 +54,8 @@ const GameBoard = () => {
   const scrambleWord = (word: string) => {
     return word
       .split("")
-      .sort(() => Math.random() - 0.5)
-      .map((letter) => letter.toUpperCase());
+      .map((letter, index) => ({ letter: letter.toUpperCase(), position: index }))
+      .sort(() => Math.random() - 0.5);
   };
 
   const startNewRound = () => {
@@ -63,6 +64,7 @@ const GameBoard = () => {
     setCurrentWord(word);
     setScrambledLetters(scrambleWord(word));
     setSelectedLetters([]);
+    setSelectedPositions([]);
   };
 
   const moveToNextUnit = () => {
@@ -108,9 +110,13 @@ const GameBoard = () => {
     return () => clearInterval(timer);
   }, [currentUnit]);
 
-  const handleLetterClick = (letter: string, index: number) => {
+  const handleLetterClick = (letter: string, position: number) => {
+    if (selectedPositions.includes(position)) return;
+    
     const newSelected = [...selectedLetters, letter];
+    const newPositions = [...selectedPositions, position];
     setSelectedLetters(newSelected);
+    setSelectedPositions(newPositions);
 
     const attemptedWord = newSelected.join("");
     if (attemptedWord.length === currentWord.length) {
@@ -127,7 +133,10 @@ const GameBoard = () => {
         }
       } else {
         toast.error("Try again!");
-        setTimeout(() => setSelectedLetters([]), 1000);
+        setTimeout(() => {
+          setSelectedLetters([]);
+          setSelectedPositions([]);
+        }, 1000);
       }
     }
   };
@@ -186,9 +195,9 @@ const GameBoard = () => {
 
         <div className="flex flex-wrap justify-center gap-3">
           <AnimatePresence>
-            {scrambledLetters.map((letter, index) => (
+            {scrambledLetters.map(({ letter, position }, index) => (
               <motion.div
-                key={index}
+                key={`${position}-${index}`}
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.5 }}
@@ -196,8 +205,8 @@ const GameBoard = () => {
               >
                 <Letter
                   letter={letter}
-                  onClick={() => handleLetterClick(letter, index)}
-                  isSelected={selectedLetters.includes(letter)}
+                  onClick={() => handleLetterClick(letter, position)}
+                  isSelected={selectedPositions.includes(position)}
                 />
               </motion.div>
             ))}
