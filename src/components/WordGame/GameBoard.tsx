@@ -157,14 +157,14 @@ const GameBoard = () => {
         // Add timestamp of successful letter
         const now = Date.now();
         const newRecentSuccesses = [...recentSuccesses, now].filter(
-          time => now - time <= 5000
+          time => now - time <= 5000 // Keep only successes within last 5 seconds
         );
         setRecentSuccesses(newRecentSuccesses);
         
         // Check if we have 3 successes within 5 seconds
         if (newRecentSuccesses.length >= 3) {
           setTimeLeft(prev => prev + 10);
-          setRecentSuccesses([]); // Reset successes
+          setRecentSuccesses([]); // Reset successes after adding bonus time
           toast.success("Bonus time! +10 seconds", {
             style: { background: '#22c55e', color: 'white' }
           });
@@ -184,6 +184,24 @@ const GameBoard = () => {
           setSelectedLetters([]);
           setSelectedPositions([]);
         }, 1000);
+      }
+    } else {
+      // Add timestamp for each correct letter placement
+      const now = Date.now();
+      if (letter === currentWord[newSelected.length - 1]) {
+        const newRecentSuccesses = [...recentSuccesses, now].filter(
+          time => now - time <= 5000
+        );
+        setRecentSuccesses(newRecentSuccesses);
+        
+        // Check if we have 3 successes within 5 seconds
+        if (newRecentSuccesses.length >= 3) {
+          setTimeLeft(prev => prev + 10);
+          setRecentSuccesses([]); // Reset successes after adding bonus time
+          toast.success("Bonus time! +10 seconds", {
+            style: { background: '#22c55e', color: 'white' }
+          });
+        }
       }
     }
   };
