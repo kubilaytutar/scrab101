@@ -1,4 +1,3 @@
-// Ses dosyalarını oluştur
 const createAudio = (src: string) => {
   const audio = new Audio(src);
   audio.load(); // Sesi önceden yükle
@@ -15,7 +14,7 @@ const createAudio = (src: string) => {
 
 // Sesleri oluştur
 export const successSound = createAudio("/2.mp3");
-export const clickSound = createAudio("/1.mp3");
+export const clickSound = createAudio("/click.mp3");
 export const tickSound = createAudio("/3.mp3");
 export const gameOverSound = createAudio("/4.mp3");
 
