@@ -8,9 +8,13 @@ interface LetterProps {
 }
 
 export const Letter = ({ letter, onClick, isSelected }: LetterProps) => {
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!isSelected && onClick) {
-      clickSound.play().catch(console.error);
+      try {
+        await clickSound.play();
+      } catch (error) {
+        console.error("Ses çalma hatası:", error);
+      }
       onClick();
     }
   };
