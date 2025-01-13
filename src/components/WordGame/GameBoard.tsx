@@ -5,28 +5,42 @@ import { toast } from "sonner";
 
 const UNITS = {
   unit1: {
-    name: "Unit 1",
-    words: ["APPLE", "BANANA", "ORANGE", "GRAPE", "MANGO", "KIWI", "PEAR", "PEACH", "PLUM", "CHERRY"]
+    name: "School Life",
+    words: ["TURKEY", "ENGLAND", "SCOTLAND", "IRELAND", "USA", "CANADA", "AUSTRALIA", "ITALY", "FRANCE", "GERMANY", "SPAIN", "RUSSIA", "INDIA", "JAPAN", "CHINA", "MEXICO", "KOREA", "ARGENTINA", "POLAND", "FINLAND", "CHILE", "PERU", "THAILAND", "BRAZIL", "NORWAY", "DENMARK", "SWEDEN", "UKRAINE", "MOROCCO", "HUNGARY"]
   },
   unit2: {
-    name: "Unit 2",
-    words: ["CARROT", "POTATO", "TOMATO", "ONION", "PEPPER", "LETTUCE", "CUCUMBER", "BROCCOLI", "CORN", "SPINACH"]
+    name: "Classroom Life",
+    words: ["WAKE", "SHOWER", "DRESS", "STUDY", "LEARN", "READ", "WRITE", "PLAN", "NOTES", "REPEAT", "SLOWLY", "QUICKLY", "CAREFULLY", "NEATLY", "ALWAYS", "OFTEN", "SOMETIMES", "RARELY", "NEVER", "PARTICIPATE"]
   },
   unit3: {
-    name: "Unit 3",
-    words: ["RED", "BLUE", "GREEN", "YELLOW", "PURPLE", "ORANGE", "BROWN", "BLACK", "WHITE", "PINK"]
+    name: "Personal Life",
+    words: ["PLUMP", "SLIM", "TALL", "SHORT", "BLOND", "WAVY", "CURLY", "STRAIGHT", "YOUNG", "OLD", "SMART", "CLEVER", "FUNNY", "CALM", "BRAVE", "HONEST", "GENTLE", "KIND", "POLITE", "FRIENDLY"]
   },
   unit4: {
-    name: "Unit 4",
-    words: ["DOCTOR", "TEACHER", "PILOT", "CHEF", "NURSE", "ARTIST", "LAWYER", "DRIVER", "WRITER", "ACTOR"]
+    name: "Family Life",
+    words: ["CLERK", "GUARD", "LAWYER", "DOCTOR", "ARCHITECT", "JOURNALIST", "PROGRAMMER", "SCIENTIST", "PHOTOGRAPHER", "ACCOUNTANT", "PSYCHOLOGIST", "MARKETER", "ASSISTANT", "CREATOR", "COUSIN", "NEPHEW", "NIECE", "FATHER", "MOTHER", "RELATIVE"]
   },
   unit5: {
-    name: "Unit 5",
-    words: ["TURKEY", "ENGLAND", "FRANCE", "SPAIN", "ITALY", "JAPAN", "CHINA", "BRAZIL", "CANADA", "EGYPT"]
+    name: "Life in the House",
+    words: ["HOUSE", "FLAT", "VILLA", "COTTAGE", "BEDROOM", "KITCHEN", "BATHROOM", "GARAGE", "SOFA", "TABLE", "CHAIR", "WARDROBE", "FRIDGE", "OVEN", "SHOWER", "CURTAIN", "CARPET", "PILLOW", "CLEAN", "RELAX"]
+  },
+  unit6: {
+    name: "Life in the City",
+    words: ["CUISINE", "FOOD", "CREAM", "SALMON", "BEEF", "RICE", "SPINACH", "PIZZA", "KEBAB", "NOODLES", "CURRY", "TACOS", "BURGER", "PASTA", "SOUP", "SPICY", "SALTY", "SWEET", "SOUR", "BITTER"]
+  },
+  unit7: {
+    name: "Life in Nature",
+    words: ["BEAR", "TURTLE", "ELEPHANT", "TIGER", "WHALE", "SHARK", "PENGUIN", "PANDA", "DOLPHIN", "JUNGLE", "OCEAN", "DESERT", "FOREST", "SURVIVE", "PROTECT", "DONATE", "BREED", "HUNT", "HIDE", "SAVE"]
+  },
+  unit8: {
+    name: "Life in Future",
+    words: ["COMEDY", "ACTION", "CARTOON", "ROMANCE", "ADVENTURE", "HORROR", "MYSTERY", "MUSICAL", "ROBOT", "ALIEN", "SPACE", "FUTURE", "EXPLORE", "DISCOVER", "INVENT", "SAVE", "ADAPT", "VIRTUAL", "DIGITAL", "CONTROL"]
   }
 };
 
-export const GameBoard = () => {
+// ... keep existing code (useState hooks and other functionality)
+
+const GameBoard = () => {
   const [currentWord, setCurrentWord] = useState("");
   const [scrambledLetters, setScrambledLetters] = useState<string[]>([]);
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
@@ -170,3 +184,5 @@ export const GameBoard = () => {
     </div>
   );
 };
+
+export default GameBoard;
