@@ -3,23 +3,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Letter } from "./Letter";
 import { toast } from "sonner";
 
-const WORDS = [
-  "APPLE",
-  "BANANA",
-  "ORANGE",
-  "GRAPE",
-  "LEMON",
-  "PEACH",
-  "CHERRY",
-  "MANGO",
-  "KIWI",
-  "MELON",
-  "PLUM",
-  "PEAR",
-  "BERRY",
-  "LIME",
-  "FIG"
-];
+const UNITS = {
+  fruits: {
+    name: "Fruits",
+    words: ["APPLE", "BANANA", "ORANGE", "GRAPE", "LEMON"]
+  },
+  animals: {
+    name: "Animals",
+    words: ["TIGER", "ELEPHANT", "LION", "GIRAFFE", "ZEBRA"]
+  },
+  colors: {
+    name: "Colors",
+    words: ["BLACK", "WHITE", "YELLOW", "PURPLE", "GREEN"]
+  },
+  jobs: {
+    name: "Jobs",
+    words: ["DOCTOR", "TEACHER", "PILOT", "CHEF", "ARTIST"]
+  }
+};
 
 export const GameBoard = () => {
   const [currentWord, setCurrentWord] = useState("");
@@ -27,6 +28,8 @@ export const GameBoard = () => {
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
+  const [currentUnit, setCurrentUnit] = useState<keyof typeof UNITS>("fruits");
+  const [wordsCompletedInUnit, setWordsCompletedInUnit] = useState(0);
 
   const scrambleWord = (word: string) => {
     return word
@@ -36,10 +39,24 @@ export const GameBoard = () => {
   };
 
   const startNewRound = () => {
-    const word = WORDS[Math.floor(Math.random() * WORDS.length)];
+    const currentUnitWords = UNITS[currentUnit].words;
+    const word = currentUnitWords[wordsCompletedInUnit];
     setCurrentWord(word);
     setScrambledLetters(scrambleWord(word));
     setSelectedLetters([]);
+  };
+
+  const moveToNextUnit = () => {
+    const unitKeys = Object.keys(UNITS) as (keyof typeof UNITS)[];
+    const currentIndex = unitKeys.indexOf(currentUnit);
+    if (currentIndex < unitKeys.length - 1) {
+      const nextUnit = unitKeys[currentIndex + 1];
+      setCurrentUnit(nextUnit);
+      setWordsCompletedInUnit(0);
+      toast.success(`Moving to new unit: ${UNITS[nextUnit].name}!`);
+    } else {
+      toast.success("Congratulations! You've completed all units!");
+    }
   };
 
   useEffect(() => {
@@ -56,7 +73,7 @@ export const GameBoard = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [currentUnit]);
 
   const handleLetterClick = (letter: string, index: number) => {
     const newSelected = [...selectedLetters, letter];
@@ -67,7 +84,14 @@ export const GameBoard = () => {
       if (attemptedWord === currentWord) {
         toast.success("Correct!");
         setScore((prev) => prev + 10);
-        setTimeout(startNewRound, 1000);
+        
+        const newWordsCompleted = wordsCompletedInUnit + 1;
+        if (newWordsCompleted >= UNITS[currentUnit].words.length) {
+          moveToNextUnit();
+        } else {
+          setWordsCompletedInUnit(newWordsCompleted);
+          setTimeout(startNewRound, 1000);
+        }
       } else {
         toast.error("Try again!");
         setTimeout(() => setSelectedLetters([]), 1000);
@@ -85,12 +109,18 @@ export const GameBoard = () => {
         >
           Word Scramble
         </motion.div>
+        <div className="text-xl font-semibold text-gray-600 mb-4">
+          Unit: {UNITS[currentUnit].name}
+        </div>
         <div className="flex justify-center gap-4 text-lg">
           <div className="bg-white rounded-lg px-4 py-2 shadow-md">
             Score: {score}
           </div>
           <div className="bg-white rounded-lg px-4 py-2 shadow-md">
             Time: {timeLeft}s
+          </div>
+          <div className="bg-white rounded-lg px-4 py-2 shadow-md">
+            Progress: {wordsCompletedInUnit}/{UNITS[currentUnit].words.length}
           </div>
         </div>
       </div>
