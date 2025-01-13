@@ -207,7 +207,7 @@ const GameBoard = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-4xl font-bold text-gray-800 mb-4"
         >
-          Word Scramble
+          Unscramble
         </motion.div>
         <div className="text-xl font-semibold text-gray-600 mb-4">
           Unit: {UNITS[currentUnit].name}
