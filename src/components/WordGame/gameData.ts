@@ -14,9 +14,9 @@ const createAudio = (src: string) => {
   };
 };
 
-export const successSound = createAudio("/2.mp3");
+export const successSound = createAudio("/success.mp3");
 export const clickSound = createAudio("/click.mp3");
-export const tickSound = createAudio("/3.mp3");
+export const tickSound = createAudio("/tick.mp3");
 export const gameOverSound = createAudio("/4.mp3");
 
 export const UNITS = {
