@@ -1,13 +1,12 @@
 import { useEffect } from "react";
-import { toast } from "sonner";
-import { UNITS, successSound } from "../gameData";
+import { UNITS } from "../gameData";
 import { initializeAvailableWords } from "../utils/gameUtils";
 
 interface UseWordManagementProps {
   currentUnit: keyof typeof UNITS;
   availableWords: string[];
   setAvailableWords: (words: string[]) => void;
-  setUsedWords: (fn: (prev: Set<string>) => Set<string>) => void;
+  setUsedWords: (words: Set<string>) => void;
   setCurrentWord: (word: string) => void;
   setScrambledLetters: (letters: Array<{ letter: string; position: number }>) => void;
   setSelectedLetters: (letters: string[]) => void;
@@ -35,17 +34,22 @@ export const useWordManagement = ({
     }
 
     const word = availableWords[0];
-    setAvailableWords((prev) => prev.slice(1));
+    const remainingWords = availableWords.slice(1);
+    setAvailableWords(remainingWords);
     setCurrentWord(word);
-    setScrambledLetters((letters) =>
-      word.split("").map((letter, index) => ({
-        letter: letter.toUpperCase(),
-        position: index,
-      }))
-    );
+    
+    const scrambledLetters = word.split("").map((letter, index) => ({
+      letter: letter.toUpperCase(),
+      position: index,
+    }));
+    setScrambledLetters(scrambledLetters);
+    
     setSelectedLetters([]);
     setSelectedPositions([]);
-    setUsedWords((prev) => new Set([...prev, word]));
+    
+    // Create a new Set with the current word added
+    const newUsedWords = new Set([...Array.from(availableWords), word]);
+    setUsedWords(newUsedWords);
   };
 
   useEffect(() => {
@@ -60,10 +64,10 @@ export const useWordManagement = ({
   }, [currentUnit]);
 
   useEffect(() => {
-    if (availableWords.length > 0 && !currentWord) {
+    if (availableWords.length > 0) {
       startNewRound();
     }
-  }, [availableWords]);
+  }, []);
 
   return { startNewRound };
 };
