@@ -60,5 +60,15 @@ export const initializeAvailableWords = (
   const words = UNITS[currentUnit].words;
   setAvailableWords(words);
   setUsedWords(new Set());
-  startNewRound();
+
+  // Initialize first word
+  if (words.length > 0) {
+    const firstWord = words[0];
+    setCurrentWord(firstWord);
+    setScrambledLetters(scrambleWord(firstWord));
+    setSelectedLetters([]);
+    setSelectedPositions([]);
+    setAvailableWords(words.slice(1));
+    setUsedWords(new Set([firstWord]));
+  }
 };

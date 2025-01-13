@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { UNITS } from "../gameData";
-import { initializeAvailableWords } from "../utils/gameUtils";
+import { initializeAvailableWords, scrambleWord } from "../utils/gameUtils";
 
 interface UseWordManagementProps {
   currentUnit: keyof typeof UNITS;
@@ -37,19 +37,10 @@ export const useWordManagement = ({
     const remainingWords = availableWords.slice(1);
     setAvailableWords(remainingWords);
     setCurrentWord(word);
-    
-    const scrambledLetters = word.split("").map((letter, index) => ({
-      letter: letter.toUpperCase(),
-      position: index,
-    }));
-    setScrambledLetters(scrambledLetters);
-    
+    setScrambledLetters(scrambleWord(word));
     setSelectedLetters([]);
     setSelectedPositions([]);
-    
-    // Create a new Set with the current word added
-    const newUsedWords = new Set([...Array.from(availableWords), word]);
-    setUsedWords(newUsedWords);
+    setUsedWords(new Set([...Array.from(availableWords), word]));
   };
 
   useEffect(() => {
@@ -62,12 +53,6 @@ export const useWordManagement = ({
       setSelectedPositions,
     });
   }, [currentUnit]);
-
-  useEffect(() => {
-    if (availableWords.length > 0) {
-      startNewRound();
-    }
-  }, []);
 
   return { startNewRound };
 };
