@@ -62,7 +62,6 @@ const GameBoard = () => {
 
   const initializeAvailableWords = (unit: keyof typeof UNITS) => {
     const words = [...UNITS[unit].words];
-    // Kelimeleri karıştır
     for (let i = words.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [words[i], words[j]] = [words[j], words[i]];
@@ -77,8 +76,8 @@ const GameBoard = () => {
       return;
     }
 
-    const word = availableWords[0]; // Her zaman listedeki ilk kelimeyi al
-    setAvailableWords(prev => prev.slice(1)); // Kullanılan kelimeyi listeden çıkar
+    const word = availableWords[0];
+    setAvailableWords(prev => prev.slice(1));
     setCurrentWord(word);
     setScrambledLetters(scrambleWord(word));
     setSelectedLetters([]);
@@ -118,6 +117,12 @@ const GameBoard = () => {
   useEffect(() => {
     initializeAvailableWords(currentUnit);
   }, [currentUnit]);
+
+  useEffect(() => {
+    if (availableWords.length > 0 && !currentWord) {
+      startNewRound();
+    }
+  }, [availableWords]);
 
   useEffect(() => {
     const timer = setInterval(() => {
