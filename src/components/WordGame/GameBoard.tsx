@@ -4,44 +4,11 @@ import { Letter } from "./Letter";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-
-const UNITS = {
-  unit1: {
-    name: "School Life",
-    words: ["ENGLAND", "SCOTLAND", "IRELAND", "USA", "CANADA", "AUSTRALIA", "ITALY", "FRANCE", "GERMANY", "SPAIN", "RUSSIA", "INDIA", "JAPAN", "CHINA", "MEXICO", "KOREA", "ARGENTINA", "POLAND", "FINLAND"]
-  },
-  unit2: {
-    name: "Classroom Life",
-    words: ["WAKE", "SHOWER", "DRESS", "STUDY", "LEARN", "READ", "WRITE", "PLAN", "NOTES", "REPEAT", "SLOWLY", "QUICKLY", "CAREFULLY", "NEATLY", "ALWAYS", "OFTEN", "SOMETIMES", "RARELY", "NEVER", "PARTICIPATE"]
-  },
-  unit3: {
-    name: "Personal Life",
-    words: ["PLUMP", "SLIM", "TALL", "SHORT", "BLOND", "WAVY", "CURLY", "STRAIGHT", "YOUNG", "OLD", "SMART", "CLEVER", "FUNNY", "CALM", "BRAVE", "HONEST", "GENTLE", "KIND", "POLITE", "FRIENDLY"]
-  },
-  unit4: {
-    name: "Family Life",
-    words: ["CLERK", "GUARD", "LAWYER", "DOCTOR", "ARCHITECT", "JOURNALIST", "PROGRAMMER", "SCIENTIST", "PHOTOGRAPHER", "ACCOUNTANT", "PSYCHOLOGIST", "MARKETER", "ASSISTANT", "CREATOR", "COUSIN", "NEPHEW", "NIECE", "FATHER", "MOTHER"]
-  },
-  unit5: {
-    name: "Life in the House",
-    words: ["HOUSE", "FLAT", "VILLA", "COTTAGE", "BEDROOM", "KITCHEN", "BATHROOM", "GARAGE", "SOFA", "TABLE", "CHAIR", "WARDROBE", "FRIDGE", "OVEN", "BATH", "CURTAIN", "CARPET", "PILLOW", "CLEAN", "RELAX"]
-  },
-  unit6: {
-    name: "Life in the City",
-    words: ["CUISINE", "FOOD", "CREAM", "SALMON", "BEEF", "RICE", "SPINACH", "PIZZA", "KEBAB", "NOODLES", "CURRY", "TACOS", "BURGER", "PASTA", "SOUP", "SPICY", "SALTY", "SWEET", "SOUR", "BITTER"]
-  },
-  unit7: {
-    name: "Life in Nature",
-    words: ["BEAR", "TURTLE", "ELEPHANT", "TIGER", "WHALE", "SHARK", "PENGUIN", "PANDA", "DOLPHIN", "JUNGLE", "OCEAN", "DESERT", "FOREST", "SURVIVE", "PROTECT", "DONATE", "BREED", "HUNT", "HIDE", "EXPLORE"]
-  },
-  unit8: {
-    name: "Life in Future",
-    words: ["COMEDY", "ACTION", "CARTOON", "ROMANCE", "ADVENTURE", "HORROR", "MYSTERY", "MUSICAL", "ROBOT", "ALIEN", "SPACE", "FUTURE", "DISCOVER", "INVENT", "DESIGN", "BUILD", "ADAPT", "VIRTUAL", "DIGITAL", "CONTROL"]
-  }
-};
-
-const successSound = new Audio("/success.mp3");
+import GameStats from "./GameStats";
+import GameOver from "./GameOver";
+import UnitSelector from "./UnitSelector";
+import WordDisplay from "./WordDisplay";
+import { UNITS, successSound } from "./gameData";
 
 const GameBoard = () => {
   const [currentWord, setCurrentWord] = useState("");
@@ -144,31 +111,6 @@ const GameBoard = () => {
     toast.success(`Game time set to ${checked ? '120' : '60'} seconds`);
   };
 
-  useEffect(() => {
-    initializeAvailableWords(currentUnit);
-  }, [currentUnit]);
-
-  useEffect(() => {
-    if (availableWords.length > 0 && !currentWord) {
-      startNewRound();
-    }
-  }, [availableWords]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          setIsGameOver(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [currentUnit, isGameOver]);
-
   const handleLetterClick = (letter: string, position: number) => {
     if (selectedPositions.includes(position)) return;
     
@@ -214,43 +156,41 @@ const GameBoard = () => {
     toast.success("Game restarted! Good luck!");
   };
 
+  useEffect(() => {
+    initializeAvailableWords(currentUnit);
+  }, [currentUnit]);
+
+  useEffect(() => {
+    if (availableWords.length > 0 && !currentWord) {
+      startNewRound();
+    }
+  }, [availableWords]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setIsGameOver(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [currentUnit, isGameOver]);
+
   return (
     <div className="max-w-2xl mx-auto p-6">
       {isGameOver ? (
-        <Card className="w-full p-6">
-          <CardHeader>
-            <CardTitle className="text-center text-2xl">Congratulations! 🎉</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="text-center mb-4">
-              <p className="text-gray-600">You showed an amazing performance!</p>
-            </div>
-            <div className="grid grid-cols-2 gap-4 text-center">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-600">Score</p>
-                <p className="text-2xl font-bold">{score}</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-600">Words Completed</p>
-                <p className="text-2xl font-bold">{wordsCompletedInUnit}</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-600">Wrong Attempts</p>
-                <p className="text-2xl font-bold">{wrongAttempts}</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-600">Jokers Used</p>
-                <p className="text-2xl font-bold">{usedJokers}</p>
-              </div>
-            </div>
-            <Button
-              onClick={handleTryAgain}
-              className="w-full mt-4"
-            >
-              Try Again
-            </Button>
-          </CardContent>
-        </Card>
+        <GameOver
+          score={score}
+          wordsCompletedInUnit={wordsCompletedInUnit}
+          wrongAttempts={wrongAttempts}
+          usedJokers={usedJokers}
+          onTryAgain={handleTryAgain}
+        />
       ) : (
         <>
           <div className="text-center mb-8">
@@ -264,20 +204,13 @@ const GameBoard = () => {
             <div className="text-xl font-semibold text-gray-600 mb-4">
               Unit: {UNITS[currentUnit].name}
             </div>
-            <div className="flex justify-center gap-4 text-lg">
-              <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-                Score: {score}
-              </div>
-              <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-                Time: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-              </div>
-              <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-                Progress: {wordsCompletedInUnit}/{UNITS[currentUnit].words.length}
-              </div>
-              <div className="bg-white rounded-lg px-4 py-2 shadow-md">
-                Joker: {jokerCount}
-              </div>
-            </div>
+            <GameStats
+              score={score}
+              timeLeft={timeLeft}
+              wordsCompletedInUnit={wordsCompletedInUnit}
+              totalWordsInUnit={UNITS[currentUnit].words.length}
+              jokerCount={jokerCount}
+            />
             <div className="flex items-center justify-center gap-2 mt-4">
               <span className="text-sm text-gray-600">60s</span>
               <Switch
@@ -309,19 +242,7 @@ const GameBoard = () => {
             layout
             className="bg-gray-50 rounded-xl p-8 shadow-lg mb-8"
           >
-            <div className="text-center mb-8">
-              <div className="text-gray-500 mb-2">Your answer:</div>
-              <div className="flex justify-center gap-2">
-                {currentWord.split("").map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-12 h-12 border-2 border-gray-300 rounded-lg flex items-center justify-center text-xl font-semibold"
-                  >
-                    {selectedLetters[i] || ""}
-                  </div>
-                ))}
-              </div>
-            </div>
+            <WordDisplay currentWord={currentWord} selectedLetters={selectedLetters} />
 
             <div className="flex flex-wrap justify-center gap-3">
               <AnimatePresence>
@@ -344,21 +265,7 @@ const GameBoard = () => {
             </div>
           </motion.div>
 
-          <div className="mt-8">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">Select a Unit</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {(Object.keys(UNITS) as (keyof typeof UNITS)[]).map((unit) => (
-                <Button
-                  key={unit}
-                  onClick={() => handleUnitSelect(unit)}
-                  variant={currentUnit === unit ? "default" : "outline"}
-                  className="w-full"
-                >
-                  {UNITS[unit].name}
-                </Button>
-              ))}
-            </div>
-          </div>
+          <UnitSelector currentUnit={currentUnit} onUnitSelect={handleUnitSelect} />
         </>
       )}
     </div>
