@@ -2,6 +2,7 @@
 const createAudio = (src: string) => {
   const audio = new Audio(src);
   audio.load(); // Sesi önceden yükle
+  audio.loop = false; // Prevent looping
   return {
     play: () => {
       audio.currentTime = 0; // Sesi başa sar
