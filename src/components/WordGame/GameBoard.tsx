@@ -7,9 +7,11 @@ import WordDisplay from "./WordDisplay";
 import GameHeader from "./GameHeader";
 import GameControls from "./GameControls";
 import LettersDisplay from "./LettersDisplay";
-import { UNITS, successSound, tickSound, gameOverSound } from "./gameData";
+import { UNITS, successSound } from "./gameData";
 import { useGameState } from "./hooks/useGameState";
-import { initializeAvailableWords, scrambleWord } from "./utils/gameUtils";
+import { useGameTimer } from "./hooks/useGameTimer";
+import { useWordManagement } from "./hooks/useWordManagement";
+import { initializeAvailableWords } from "./utils/gameUtils";
 
 const GameBoard = () => {
   const gameState = useGameState();
@@ -46,40 +48,12 @@ const GameBoard = () => {
     setIsGameOver,
   } = gameState;
 
-  const useJoker = () => {
-    if (jokerCount > 0 && currentWord) {
-      const nextLetter = currentWord[selectedLetters.length];
-      if (nextLetter) {
-        const position = scrambledLetters.findIndex(
-          (l) => l.letter === nextLetter && !selectedPositions.includes(l.position)
-        );
-        if (position !== -1) {
-          handleLetterClick(nextLetter, scrambledLetters[position].position);
-          setJokerCount((prev) => prev - 1);
-          setUsedJokers((prev) => prev + 1);
-          setTimeLeft((prev) => Math.max(0, prev - 10));
-          toast.info("Joker used! -10 seconds");
-        }
-      }
-    } else if (jokerCount === 0) {
-      toast.error("No jokers left!");
-    }
-  };
-
-  const startNewRound = () => {
-    if (availableWords.length === 0) {
-      moveToNextUnit();
-      return;
-    }
-
-    const word = availableWords[0];
-    setAvailableWords(prev => prev.slice(1));
-    setCurrentWord(word);
-    setScrambledLetters(scrambleWord(word));
-    setSelectedLetters([]);
-    setSelectedPositions([]);
-    setUsedWords(prev => new Set([...prev, word]));
-  };
+  useGameTimer({
+    timeLeft,
+    setTimeLeft,
+    isGameOver,
+    setIsGameOver,
+  });
 
   const moveToNextUnit = () => {
     const unitKeys = Object.keys(UNITS) as (keyof typeof UNITS)[];
@@ -99,6 +73,39 @@ const GameBoard = () => {
       toast.success(`Moving to new unit: ${UNITS[nextUnit].name}!`);
     } else {
       toast.success("Congratulations! You've completed all units!");
+    }
+  };
+
+  const { startNewRound } = useWordManagement({
+    currentUnit,
+    availableWords,
+    setAvailableWords,
+    setUsedWords,
+    setCurrentWord,
+    setScrambledLetters,
+    setSelectedLetters,
+    setSelectedPositions,
+    setWordsCompletedInUnit,
+    moveToNextUnit,
+  });
+
+  const useJoker = () => {
+    if (jokerCount > 0 && currentWord) {
+      const nextLetter = currentWord[selectedLetters.length];
+      if (nextLetter) {
+        const position = scrambledLetters.findIndex(
+          (l) => l.letter === nextLetter && !selectedPositions.includes(l.position)
+        );
+        if (position !== -1) {
+          handleLetterClick(nextLetter, scrambledLetters[position].position);
+          setJokerCount((prev) => prev - 1);
+          setUsedJokers((prev) => prev + 1);
+          setTimeLeft((prev) => Math.max(0, prev - 10));
+          toast.info("Joker used! -10 seconds");
+        }
+      }
+    } else if (jokerCount === 0) {
+      toast.error("No jokers left!");
     }
   };
 
@@ -181,51 +188,6 @@ const GameBoard = () => {
     });
     toast.success("Game restarted! Good luck!");
   };
-
-  useEffect(() => {
-    initializeAvailableWords(currentUnit, {
-      setAvailableWords,
-      setUsedWords,
-      setCurrentWord,
-      setScrambledLetters,
-      setSelectedLetters,
-      setSelectedPositions,
-    });
-  }, [currentUnit]);
-
-  useEffect(() => {
-    if (availableWords.length > 0 && !currentWord) {
-      startNewRound();
-    }
-  }, [availableWords]);
-
-  useEffect(() => {
-    let hasPlayedTickSound = false;
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1 && !isGameOver) {
-          clearInterval(timer);
-          setIsGameOver(true);
-          // Add 1 second delay before playing game over sound
-          setTimeout(() => {
-            gameOverSound.play().catch(console.error);
-          }, 1000);
-          return 0;
-        }
-        if (prev <= 13 && prev > 0 && !isGameOver && !hasPlayedTickSound) {
-          tickSound.play().catch(console.error);
-          hasPlayedTickSound = true;
-        }
-        if (isGameOver) {
-          clearInterval(timer);
-          return prev;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [currentUnit, isGameOver]);
 
   return (
     <div className="max-w-2xl mx-auto p-6">
