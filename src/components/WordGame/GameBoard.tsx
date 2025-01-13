@@ -24,7 +24,7 @@ const UNITS = {
   },
   unit5: {
     name: "Life in the House",
-    words: ["HOUSE", "FLAT", "VILLA", "COTTAGE", "BEDROOM", "KITCHEN", "BATHROOM", "GARAGE", "SOFA", "TABLE", "CHAIR", "WARDROBE", "FRIDGE", "OVEN", "SHOWER", "CURTAIN", "CARPET", "PILLOW", "CLEAN", "RELAX"]
+    words: ["HOUSE", "FLAT", "VILLA", "COTTAGE", "BEDROOM", "KITCHEN", "BATHROOM", "GARAGE", "SOFA", "TABLE", "CHAIR", "WARDROBE", "FRIDGE", "OVEN", "BATH", "CURTAIN", "CARPET", "PILLOW", "CLEAN", "RELAX"]
   },
   unit6: {
     name: "Life in the City",
@@ -36,7 +36,7 @@ const UNITS = {
   },
   unit8: {
     name: "Life in Future",
-    words: ["COMEDY", "ACTION", "CARTOON", "ROMANCE", "ADVENTURE", "HORROR", "MYSTERY", "MUSICAL", "ROBOT", "ALIEN", "SPACE", "FUTURE", "EXPLORE", "DISCOVER", "INVENT", "SAVE", "ADAPT", "VIRTUAL", "DIGITAL", "CONTROL"]
+    words: ["COMEDY", "ACTION", "CARTOON", "ROMANCE", "ADVENTURE", "HORROR", "MYSTERY", "MUSICAL", "ROBOT", "ALIEN", "SPACE", "FUTURE", "EXPLORE", "DISCOVER", "INVENT", "CREATE", "ADAPT", "VIRTUAL", "DIGITAL", "CONTROL"]
   }
 };
 
