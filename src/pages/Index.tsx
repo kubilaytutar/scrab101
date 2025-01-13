@@ -23,7 +23,7 @@ const Index = () => {
               <Info className="w-6 h-6 text-gray-600" />
             </button>
           </TooltipTrigger>
-          <TooltipContent className="max-w-sm p-4" side="top">
+          <TooltipContent className="max-w-sm p-4 bg-white border shadow-lg" side="top">
             <div className="space-y-2 text-sm">
               <h3 className="font-semibold">Game Rules</h3>
               <ul className="list-disc pl-4 space-y-1">
