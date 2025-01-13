@@ -1,3 +1,6 @@
+export const successSound = new Audio("/success.mp3");
+export const clickSound = new Audio("/click.mp3");
+
 export const UNITS = {
   unit1: {
     name: "School Life",
@@ -32,5 +35,3 @@ export const UNITS = {
     words: ["COMEDY", "ACTION", "CARTOON", "ROMANCE", "ADVENTURE", "HORROR", "MYSTERY", "MUSICAL", "ROBOT", "ALIEN", "SPACE", "FUTURE", "DISCOVER", "INVENT", "DESIGN", "BUILD", "ADAPT", "VIRTUAL", "DIGITAL", "CONTROL"]
   }
 };
-
-export const successSound = new Audio("/success.mp3");

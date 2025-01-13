@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { clickSound } from "./gameData";
 
 interface LetterProps {
   letter: string;
@@ -7,6 +8,13 @@ interface LetterProps {
 }
 
 export const Letter = ({ letter, onClick, isSelected }: LetterProps) => {
+  const handleClick = () => {
+    if (!isSelected && onClick) {
+      clickSound.play().catch(console.error);
+      onClick();
+    }
+  };
+
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}
@@ -17,7 +25,7 @@ export const Letter = ({ letter, onClick, isSelected }: LetterProps) => {
             ? "bg-gray-200 text-gray-400 cursor-not-allowed"
             : "bg-white shadow-md hover:bg-gray-50 text-gray-800"
         }`}
-      onClick={onClick}
+      onClick={handleClick}
       disabled={isSelected}
     >
       {letter}
