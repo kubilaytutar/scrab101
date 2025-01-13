@@ -1,4 +1,4 @@
-import { GameBoard } from "@/components/WordGame/GameBoard";
+import GameBoard from "@/components/WordGame/GameBoard";
 
 const Index = () => {
   return (
