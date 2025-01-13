@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import GameStats from "./GameStats";
 import GameOver from "./GameOver";
@@ -47,6 +47,8 @@ const GameBoard = () => {
     isGameOver,
     setIsGameOver,
   } = gameState;
+
+  const [recentSuccesses, setRecentSuccesses] = useState<number[]>([]);
 
   useGameTimer({
     timeLeft,
@@ -151,6 +153,22 @@ const GameBoard = () => {
         successSound.play().catch(console.error);
         toast.success("Correct!");
         setScore((prev) => prev + 10);
+        
+        // Add timestamp of successful letter
+        const now = Date.now();
+        const newRecentSuccesses = [...recentSuccesses, now].filter(
+          time => now - time <= 5000
+        );
+        setRecentSuccesses(newRecentSuccesses);
+        
+        // Check if we have 3 successes within 5 seconds
+        if (newRecentSuccesses.length >= 3) {
+          setTimeLeft(prev => prev + 10);
+          setRecentSuccesses([]); // Reset successes
+          toast.success("Bonus time! +10 seconds", {
+            style: { background: '#22c55e', color: 'white' }
+          });
+        }
         
         const newWordsCompleted = wordsCompletedInUnit + 1;
         if (newWordsCompleted >= UNITS[currentUnit].words.length) {
